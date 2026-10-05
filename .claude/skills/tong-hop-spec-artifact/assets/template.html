@@ -1,0 +1,259 @@
+<title>{{TITLE_2_4_TU}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: sticky TOC rail on the left (desktop), single reading column; stacks to one column on phones */
+:root{
+  --bg:#f5f6f9; --surface:#ffffff; --sunk:#eceef4; --fg:#1b2030; --muted:#5b6378; --line:#d9dce6;
+  --accent:#2446b8; --accent-soft:#e3e8fa;
+  --ok:#17794a; --ok-soft:#e1f3e9; --warn:#9a5b00; --warn-soft:#fbefd9; --bad:#b3261e; --bad-soft:#fbe4e2;
+  --f-display:"Be Vietnam Pro",system-ui,"Segoe UI",sans-serif;
+  --f-body:"Be Vietnam Pro",system-ui,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12141b; --surface:#1a1d27; --sunk:#222634; --fg:#e6e8f0; --muted:#9aa1b5; --line:#2f3444;
+  --accent:#8ea6ff; --accent-soft:#232c4d;
+  --ok:#5fd39a; --ok-soft:#173327; --warn:#f0b457; --warn-soft:#3a2c14; --bad:#ff8a80; --bad-soft:#3d1c1b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12141b; --surface:#1a1d27; --sunk:#222634; --fg:#e6e8f0; --muted:#9aa1b5; --line:#2f3444;
+  --accent:#8ea6ff; --accent-soft:#232c4d;
+  --ok:#5fd39a; --ok-soft:#173327; --warn:#f0b457; --warn-soft:#3a2c14; --bad:#ff8a80; --bad-soft:#3d1c1b; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.6;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding-block:32px;font-size:13px}
+nav.toc b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+nav.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+nav.toc a{color:var(--fg);text-decoration:none;display:block;padding:4px 8px;border-radius:6px}
+nav.toc a:hover,nav.toc a:focus-visible{background:var(--accent-soft);color:var(--accent);outline:none}
+main{min-width:0;padding-block:32px}
+header.doc{border-bottom:1px solid var(--line);padding-bottom:24px;margin-bottom:8px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;color:var(--accent);letter-spacing:.04em}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,36px);line-height:1.2;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--f-display);font-weight:700;font-size:22px;margin:48px 0 12px;text-wrap:balance;scroll-margin-top:16px}
+h3{font-size:16px;font-weight:700;margin:28px 0 8px}
+p{margin:0 0 12px;max-width:72ch}
+.lede{color:var(--muted);max-width:70ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:16px;font-size:13px;color:var(--muted)}
+.meta span b{color:var(--fg);font-weight:600}
+.counts{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.counts span{font-family:var(--f-mono);font-size:12px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-variant-numeric:tabular-nums}
+code,.id{font-family:var(--f-mono);font-size:12.5px}
+.id{color:var(--accent);white-space:nowrap}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface);margin:8px 0 16px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:var(--sunk);font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.nw{white-space:nowrap}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;white-space:nowrap}
+.p-ok{background:var(--ok-soft);color:var(--ok)} .p-bad{background:var(--bad-soft);color:var(--bad)} .p-warn{background:var(--warn-soft);color:var(--warn)} .p-mut{background:var(--sunk);color:var(--muted)}
+.msg{font-weight:600}
+.diagram{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;overflow-x:auto;margin:8px 0 16px}
+.diagram pre.mermaid{margin:0;background:transparent;text-align:center}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.figs{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:8px 0 16px}
+.fig{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;min-width:0}
+.fig img{display:block;width:100%;height:auto;max-height:420px;object-fit:contain;background:var(--sunk);border-radius:6px;cursor:zoom-in}
+.fig img.zoom{max-height:none;cursor:zoom-out}
+.fig figcaption{font-size:13px;margin-top:8px;display:grid;gap:2px}
+.fig .src{color:var(--muted);font-size:12px}
+.fig .miss{color:var(--muted);font-size:13px;margin:6px 0 0}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.box h4{margin:0 0 6px;font-size:14px}
+.box ul{margin:0;padding-left:18px}
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:10px 14px;border-radius:0 8px 8px 0;margin:8px 0 16px;max-width:80ch;font-size:14px}
+.note.info{border-color:var(--accent);background:var(--accent-soft)}
+.timeline{font-family:var(--f-mono);font-size:13px;background:var(--sunk);border-radius:8px;padding:12px 14px;overflow-x:auto;white-space:pre;line-height:1.7}
+.search{display:flex;gap:8px;align-items:center;margin:8px 0 12px;flex-wrap:wrap}
+.search input{font:inherit;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);min-width:0;flex:1;max-width:360px}
+.search input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.search small{color:var(--muted)}
+.prio{font-family:var(--f-mono);font-size:12px;font-weight:600}
+@media (max-width:860px){.wrap{grid-template-columns:1fr;gap:0} nav.toc{position:static;padding-block:24px 0} nav.toc ol{display:flex;flex-wrap:wrap}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<!-- ============================================================
+  TEMPLATE tong-hop-spec-artifact
+  - Thay mọi {{...}}. Section nào spec không có thì xóa luôn cả section và link TOC tương ứng.
+  - Mọi màu lấy từ token trong :root. KHÔNG dùng màu literal.
+  - Snippet component nằm ở cuối file (trong comment), copy khi cần.
+  - Mẫu hoàn chỉnh: assets/example-login-frd.html
+============================================================ -->
+<div class="wrap">
+<nav class="toc" aria-label="Mục lục">
+  <b>Mục lục</b>
+  <ol>
+    <li><a href="#overview">Tổng quan &amp; scope</a></li>
+    <li><a href="#flow-main">Flow {{…}}</a></li>
+    <!-- mỗi flow thêm 1 link -->
+    <li><a href="#rules">Business rules</a></li>
+    <li><a href="#matrix">Ma trận trạng thái</a></li>
+    <li><a href="#messages">Message</a></li>
+    <li><a href="#usecases">Use case &amp; truy vết</a></li>
+    <li><a href="#vr">Validation &amp; AC</a></li>
+    <li><a href="#images">Nguồn ảnh</a></li><!-- chỉ khi có ảnh -->
+    <li><a href="#gaps">Điểm cần làm rõ</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="doc">
+  <div class="eyebrow">{{LOẠI TÀI LIỆU}} · {{SẢN PHẨM}} · {{MODULE}}</div>
+  <h1>{{TÊN FEATURE}}</h1>
+  <p class="lede">Bản tổng hợp user flow, business rule và logic từ {{NGUỒN}}. Mọi rule đều ghi ID gốc để truy ngược về spec. Những chỗ spec không nói rõ được gắn nhãn <span class="pill p-warn">❓ Giả định</span> và gom lại ở mục cuối.</p>
+  <div class="meta">
+    <span>Phiên bản <b>{{vX.Y}}</b></span>
+    <span>Cập nhật <b>{{dd/mm/yyyy}}</b></span>
+    <span>Trạng thái <b>{{STATUS}}</b></span>
+    <span>Hệ thống <b>{{HỆ THỐNG ẢNH HƯỞNG}}</b></span>
+  </div>
+  <!-- Chỉ liệt kê loại ID spec thực sự có. Đếm bằng script (regex trên spec.txt), không đếm tay. -->
+  <div class="counts"><span>{{n}} Use case</span><span>{{n}} BR</span><span>{{n}} FR</span><span>{{n}} VR</span><span>{{n}} AC</span></div>
+</header>
+
+<section id="overview">
+<h2>Tổng quan &amp; scope</h2>
+<p>{{2-4 câu: ai làm gì, điều kiện chính, các con số chốt in đậm}}</p>
+<div class="cols">
+  <div class="box"><h4>Các con số chốt</h4><ul><li>{{timeout / hạn mức / giới hạn, kèm đơn vị}}</li></ul></div>
+  <div class="box"><h4>Màn hình / Entry point</h4><ul><li>{{field, action}}</li></ul></div>
+  <div class="box"><h4>Pre-condition</h4><ul><li>{{…}}</li></ul></div>
+</div>
+<h3>Scope</h3>
+<div class="cols">
+  <div class="box"><h4><span class="pill p-ok">In scope</span></h4><ul><li>{{…}}</li></ul></div>
+  <div class="box"><h4><span class="pill p-mut">Out of scope</span></h4><ul><li>{{…}}</li></ul></div>
+</div>
+</section>
+
+<!-- ===== FLOW: lặp khối này cho mỗi flow (thường 3-6 flow) ===== -->
+<section id="flow-main">
+<h2>Flow 1 · {{Tên flow}}</h2>
+<p>{{1-2 câu: thứ tự xử lý, điểm mấu chốt}}</p>
+<div class="diagram"><pre class="mermaid">
+flowchart TD
+  A["{{Bước}}"] --> B{"{{Điều kiện?}}"}
+  B -- "{{nhánh}}" --> E1["{{Message lỗi}}"]
+  B -- "{{nhánh}}" --> OK["{{Kết quả}}"]
+</pre></div>
+</section>
+
+<section id="rules">
+<h2>Business rules</h2>
+<div class="search"><label for="q">Lọc rule</label><input id="q" type="search" placeholder="vd: {{từ khóa}}, BR-…, FR-…"><small id="qcount"></small></div>
+<div class="tbl"><table class="filterable">
+<thead><tr><th>ID</th><th>Nhóm</th><th>Rule</th><th>FR / AC</th></tr></thead>
+<tbody>
+<tr><td class="id">{{BR-XXX-01}}</td><td>{{Nhóm}}</td><td>{{Rule viết gọn, giữ nguyên số liệu}}</td><td class="nw"><code>{{FR-.. · AC-..}}</code></td></tr>
+</tbody></table></div>
+
+<h3>Bảng quyết định: {{…}}</h3>
+<div class="tbl"><table>
+<thead><tr><th>{{Điều kiện 1}}</th><th>{{Điều kiện 2}}</th><th>Kết quả</th><th>Message</th></tr></thead>
+<tbody><tr><td>{{…}}</td><td>{{…}}</td><td><span class="pill p-ok">Có</span></td><td class="msg">{{…}}</td></tr></tbody>
+</table></div>
+</section>
+
+<section id="matrix">
+<h2>Ma trận sự kiện → {{trạng thái A}} / {{trạng thái B}}</h2>
+<p>Bảng này gom các rule đang rải rác trong {{section}} và cho biết mỗi sự kiện ảnh hưởng thế nào tới {{…}}.</p>
+<div class="tbl"><table>
+<thead><tr><th>Sự kiện</th><th>{{Trạng thái A}}</th><th>{{Trạng thái B}}</th><th>Nguồn</th></tr></thead>
+<tbody><tr><td>{{…}}</td><td><span class="pill p-bad">Vô hiệu</span></td><td><span class="pill p-ok">Giữ</span></td><td><code>{{BR-..}}</code></td></tr></tbody>
+</table></div>
+</section>
+
+<section id="messages">
+<h2>Danh mục message</h2>
+<div class="tbl"><table>
+<thead><tr><th>Tình huống</th><th>Message</th><th>Vị trí</th><th>Nguồn</th></tr></thead>
+<tbody><tr><td>{{…}}</td><td class="msg">{{nguyên văn}}</td><td>{{màn}}</td><td><code>{{AC-..}}</code></td></tr></tbody>
+</table></div>
+</section>
+
+<section id="usecases">
+<h2>Use case &amp; truy vết</h2>
+<div class="tbl"><table class="filterable">
+<thead><tr><th>UC</th><th>Tình huống</th><th>Kết quả mong đợi</th><th>BR / FR</th><th>VR / AC</th></tr></thead>
+<tbody><tr><td class="id">{{UC-01}}</td><td>{{…}}</td><td>{{…}}</td><td class="nw"><code>{{…}}</code></td><td class="nw"><code>{{…}}</code></td></tr></tbody>
+</table></div>
+</section>
+
+<section id="vr">
+<h2>Validation rules &amp; Acceptance criteria</h2>
+<h3>Validation rules</h3>
+<div class="tbl"><table class="filterable">
+<thead><tr><th>ID</th><th>Điều kiện</th><th>Kết quả</th><th>FR</th></tr></thead>
+<tbody><tr><td class="id">{{VR-01}}</td><td>{{…}}</td><td>{{…}}</td><td><code>{{…}}</code></td></tr></tbody>
+</table></div>
+<h3>Acceptance criteria</h3>
+<div class="tbl"><table class="filterable">
+<thead><tr><th>AC</th><th>Given</th><th>When</th><th>Then</th></tr></thead>
+<tbody><tr><td class="id">{{AC-01}}</td><td>{{…}}</td><td>{{…}}</td><td>{{…}}</td></tr></tbody>
+</table></div>
+</section>
+
+<!-- ===== CHỈ KHI CÓ ẢNH (đính kèm hoặc trong spec). Không có ảnh thì xóa section này + link TOC ===== -->
+<section id="images">
+<h2>Nguồn ảnh</h2>
+<p>{{n}} ảnh được dùng làm nguồn. Rule, field, message lấy từ ảnh đều ghi <i>(từ ảnh #n)</i>. Ảnh chỉ cho thấy giao diện; mọi hành vi không nhìn thấy được trong ảnh đều nằm ở mục "Điểm cần làm rõ". Bấm vào ảnh để phóng to.</p>
+{{FIGURES}}
+<!-- {{FIGURES}} = output của scripts/embed_images.py. Ảnh chỉ dán trong chat (không có file) → thêm thẻ:
+<figure class="fig nofile"><figcaption><b>Ảnh #n</b> — mô tả<span class="src">dán trong chat</span></figcaption><p class="miss">Không nhúng (không có file).</p></figure> -->
+</section>
+
+<section id="gaps">
+<h2>Điểm cần làm rõ với BA/PO</h2>
+<p>Đây là những chỗ spec thiếu, mơ hồ hoặc có thể hiểu nhiều cách. Trang này không tự quy định rule cho các chỗ đó.</p>
+<div class="tbl"><table class="filterable">
+<thead><tr><th>#</th><th>Ưu tiên</th><th>Loại</th><th>Câu hỏi</th><th>Liên quan</th></tr></thead>
+<tbody>
+<tr><td class="id">Q-01</td><td><span class="prio" style="color:var(--bad)">Cao</span></td><td>{{Missing|Ambiguity|Conflict|Assumption|Editorial}}</td><td>{{Câu hỏi hỏi được ngay}}</td><td><code>{{UC/BR}}</code></td></tr>
+<!-- Ưu tiên TB: style="color:var(--warn)" · Thấp: style="color:var(--muted)" -->
+</tbody></table></div>
+<p class="note info">Nguồn: {{hệ thống}} · <code>{{slug / #id}}</code> ({{page id, revision}}, cập nhật {{dd/mm/yyyy}}).</p>
+</section>
+</main>
+</div>
+
+<!-- ================= SNIPPETS =================
+Pill trạng thái:  <span class="pill p-ok">Có</span>   p-bad / p-warn / p-mut
+Giả định inline:  <small>❓ suy luận</small>   hoặc   <span class="pill p-warn">❓ Chưa quy định</span>
+Note giả định:    <p class="note"><b>❓ Giả định:</b> … (xem Q-xx)</p>
+Note thông tin:   <p class="note info">…</p>
+Timeline / ví dụ: <div class="timeline">09:00  User login
+09:30  …          → …</div>
+Box so sánh:      <div class="cols"><div class="box"><h4>…</h4><ul><li>…</li></ul></div> … </div>
+Sequence:         <div class="diagram"><pre class="mermaid">
+sequenceDiagram
+  participant A as Device A
+  participant S as Hệ thống
+  A->>S: …
+  S-->>A: …
+  Note over A,S: …
+</pre></div>
+Lưu ý mermaid:    label luôn đặt trong "..."; xuống dòng bằng <br/>; không dùng dấu " bên trong label;
+                  trong sequence không dùng ; hoặc # trần; nhánh lỗi hệ thống vẽ bằng  -. "…" .->
+============================================== -->
+
+<script>
+(function(){
+  var q=document.getElementById('q'), out=document.getElementById('qcount');
+  var rows=[].slice.call(document.querySelectorAll('table.filterable tbody tr'));
+  function run(){
+    var v=(q.value||'').trim().toLowerCase(), n=0;
+    rows.forEach(function(r){var hit=!v||r.textContent.toLowerCase().indexOf(v)>-1; r.hidden=!hit; if(hit)n++;});
+    out.textContent=v?(n+' dòng khớp (lọc cả bảng rule, UC, VR, AC, câu hỏi)'):'';
+  }
+  q.addEventListener('input',run);
+})();
+</script>
+
+<script>
+document.querySelectorAll('.fig img').forEach(function(im){im.addEventListener('click',function(){im.classList.toggle('zoom');});});
+</script>

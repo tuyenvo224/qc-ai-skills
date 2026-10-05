@@ -1,0 +1,49 @@
+<!-- ============================================================
+  MẪU PHẦN ẢNH (tong-hop-spec-artifact) — CHỈ ĐỌC KHI INPUT CÓ ẢNH.
+  Cắt từ output thật "FRD Đăng ký tài khoản Biz Client" (1 ảnh sơ đồ đính kèm).
+  Đây là ĐOẠN MẪU, không phải trang hoàn chỉnh: class dùng trong template.html.
+  Học 4 điểm:
+   1. Lede nêu rõ có ảnh làm nguồn: "... kết hợp với 1 ảnh sơ đồ flow đính kèm (ảnh #1)".
+   2. Thông tin lấy từ ảnh trong các mục khác ghi "(từ ảnh #n, bước x)".
+   3. Mục "Nguồn ảnh": mô tả CHỈ những gì nhìn thấy + bảng "Đối chiếu ảnh #n với spec" (Khớp / Lỗi trên ảnh / Dễ hiểu sai → trỏ Q-xx) + note kết luận.
+   4. Câu hỏi Q-xx sinh ra từ ảnh: ảnh khác spec / ảnh thiếu nhánh → cột "Liên quan" ghi "ảnh #n".
+  Ảnh thật đã thay bằng ảnh giữ chỗ 1x1 (data URI) để file mẫu nhẹ; output thật nhúng bằng scripts/embed_images.py.
+============================================================ -->
+
+<!-- 1. Lede (header) -->
+  <p class="lede">Bản tổng hợp user flow, business rule và logic từ FRD "[C] FRD – ĐĂNG KÝ TÀI KHOẢN BIZ CLIENT" trên BookStack, kết hợp với 1 ảnh sơ đồ flow đính kèm (ảnh #1). Mọi rule đều ghi ID gốc để truy ngược về spec. Những chỗ spec không nói rõ được gắn nhãn <span class="pill p-warn">❓ Giả định</span> và gom lại ở mục cuối.</p>
+
+<!-- 2. Trích nguồn ảnh trong mục khác (Tổng quan › Màn hình / Entry point) -->
+<ul>
+    <li>Checkbox đồng ý Điều khoản sử dụng và Chính sách bảo mật <i>(từ ảnh #1, bước 2)</i></li>
+</ul>
+
+<!-- 3. Mục Nguồn ảnh (đặt ngay trước #gaps) -->
+<section id="images">
+<h2>Nguồn ảnh</h2>
+<p>1 ảnh được dùng làm nguồn. Rule, field, message lấy từ ảnh đều ghi <i>(từ ảnh #n)</i>. Ảnh chỉ cho thấy giao diện; mọi hành vi không nhìn thấy được trong ảnh đều nằm ở mục "Điểm cần làm rõ". Bấm vào ảnh để phóng to.</p>
+<div class="figs">
+<figure class="fig"><img data-note="ảnh thật đã thay bằng ảnh giữ chỗ 1x1 để file mẫu nhẹ" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==" alt="Ảnh #1: Sơ đồ &#x27;Quy trình đăng ký tài khoản Biz Client&#x27; gồm các bước 1–19 (không có bước 14), 3 điểm quyết định (7, 12, 13), hộp đỏ Existing Client Popup với nút Đóng / Gửi yêu cầu hỗ trợ và chú thích màu" loading="lazy"><figcaption><b>Ảnh #1</b> — Sơ đồ &#x27;Quy trình đăng ký tài khoản Biz Client&#x27; gồm các bước 1–19 (không có bước 14), 3 điểm quyết định (7, 12, 13), hộp đỏ Existing Client Popup với nút Đóng / Gửi yêu cầu hỗ trợ và chú thích màu<span class="src">đính kèm (biz-order-project/dang-ky.png, nén JPEG để nhúng) · dang-ky.jpg</span></figcaption></figure>
+</div>
+
+<h3>Đối chiếu ảnh #1 với spec</h3>
+<div class="tbl"><table>
+<thead><tr><th>Điểm trên ảnh #1</th><th>Spec</th><th>Đánh giá</th></tr></thead>
+<tbody>
+<tr><td>Bước 1–13, 15–19 theo thứ tự: nhập → Consent → validate → duplicate → Lookup Key → Pre-check → OTP → verify → re-check Email/SĐT → re-check Client → Potential → CMS → Account → Relationship → Default Config → Active</td><td>§1.1, §5.5 Step 1–14</td><td><span class="pill p-ok">Khớp</span></td></tr>
+<tr><td>Không có bước 14 (đánh số từ 13 nhảy sang 15)</td><td>—</td><td><span class="pill p-mut">Lỗi đánh số trên ảnh</span></td></tr>
+<tr><td>Hộp đỏ Existing Client: Dừng, Không gửi OTP, Xác định Client ID, Sales Owner + Email, Popup, User quyết định; Đóng → Kết thúc; Gửi yêu cầu hỗ trợ → Tạo Support Request</td><td>§1.3.2, §5.9</td><td><span class="pill p-ok">Khớp</span></td></tr>
+<tr><td>Nhánh "Có / Trở thành Client chính thức" ở bước 12 trỏ vào cùng hộp đỏ có dòng "Không gửi OTP"</td><td>UC-04: OTP đã gửi và đã verify</td><td><span class="pill p-warn">Dễ hiểu sai</span> (xem Q-09)</td></tr>
+<tr><td>Không vẽ: fallback sales.pool cho popup, popup "Yêu cầu đã được ghi nhận", gửi Email + Log/Retry</td><td>§5.9.1–5.9.5, §9.1</td><td><span class="pill p-mut">Thiếu trên ảnh</span></td></tr>
+<tr><td>Không vẽ nhánh lỗi: Consent fail, Input fail, Email/SĐT tồn tại, Lookup lỗi, SMS fail, OTP sai/hết hạn, Resend, duplicate sau OTP, Odoo/CMS fail, Default Config fail</td><td>§5.5, §5.7, §5.13</td><td><span class="pill p-mut">Thiếu trên ảnh</span></td></tr>
+</tbody></table></div>
+<p class="note info">Không phát hiện chỗ ảnh #1 ghi rule <b>trái ngược</b> với spec. Ảnh là bản rút gọn happy path và nhánh Existing Client.</p>
+</section>
+
+<!-- 4. Câu hỏi sinh ra từ ảnh (dòng trong bảng #gaps) -->
+<div class="tbl"><table class="filterable">
+<thead><tr><th>#</th><th>Ưu tiên</th><th>Loại</th><th>Câu hỏi</th><th>Liên quan</th></tr></thead>
+<tbody>
+<tr><td class="id">Q-09</td><td><span class="prio" style="color:var(--warn)">TB</span></td><td>Ambiguity</td><td>UC-04 (Existing Client phát hiện sau OTP): §5.9.4 và hộp đỏ trên ảnh #1 đều ghi "Không gửi OTP", nhưng OTP đã gửi và verify. Popup ở trường hợp này dùng nội dung giống hệt Pre-check không? Support Request có ghi chú rằng SĐT đã được xác thực OTP không?</td><td><code>UC-04, §5.9.4, ảnh #1</code></td></tr>
+<tr><td class="id">Q-22</td><td><span class="prio" style="color:var(--muted)">Thấp</span></td><td>Missing</td><td>Ảnh #1 không vẽ nhánh lỗi, fallback sales.pool cho popup, và popup "Yêu cầu đã được ghi nhận". Nếu ảnh được dùng làm flow chính thức cho DEV/QC thì có cập nhật ảnh không?</td><td><code>ảnh #1, §9.1</code></td></tr>
+</tbody></table></div>

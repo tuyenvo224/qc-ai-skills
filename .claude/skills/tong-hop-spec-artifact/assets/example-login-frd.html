@@ -1,0 +1,488 @@
+<title>Biz Client Login FRD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: sticky TOC rail on the left (desktop), single reading column; stacks to one column on phones */
+:root{
+  --bg:#f5f6f9; --surface:#ffffff; --sunk:#eceef4; --fg:#1b2030; --muted:#5b6378; --line:#d9dce6;
+  --accent:#2446b8; --accent-soft:#e3e8fa;
+  --ok:#17794a; --ok-soft:#e1f3e9; --warn:#9a5b00; --warn-soft:#fbefd9; --bad:#b3261e; --bad-soft:#fbe4e2;
+  --f-display:"Be Vietnam Pro",system-ui,"Segoe UI",sans-serif;
+  --f-body:"Be Vietnam Pro",system-ui,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12141b; --surface:#1a1d27; --sunk:#222634; --fg:#e6e8f0; --muted:#9aa1b5; --line:#2f3444;
+  --accent:#8ea6ff; --accent-soft:#232c4d;
+  --ok:#5fd39a; --ok-soft:#173327; --warn:#f0b457; --warn-soft:#3a2c14; --bad:#ff8a80; --bad-soft:#3d1c1b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12141b; --surface:#1a1d27; --sunk:#222634; --fg:#e6e8f0; --muted:#9aa1b5; --line:#2f3444;
+  --accent:#8ea6ff; --accent-soft:#232c4d;
+  --ok:#5fd39a; --ok-soft:#173327; --warn:#f0b457; --warn-soft:#3a2c14; --bad:#ff8a80; --bad-soft:#3d1c1b; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.6;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding-block:32px;font-size:13px}
+nav.toc b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+nav.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+nav.toc a{color:var(--fg);text-decoration:none;display:block;padding:4px 8px;border-radius:6px}
+nav.toc a:hover,nav.toc a:focus-visible{background:var(--accent-soft);color:var(--accent);outline:none}
+main{min-width:0;padding-block:32px}
+header.doc{border-bottom:1px solid var(--line);padding-bottom:24px;margin-bottom:8px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;color:var(--accent);letter-spacing:.04em}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,36px);line-height:1.2;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--f-display);font-weight:700;font-size:22px;margin:48px 0 12px;text-wrap:balance;scroll-margin-top:16px}
+h3{font-size:16px;font-weight:700;margin:28px 0 8px}
+p{margin:0 0 12px;max-width:72ch}
+.lede{color:var(--muted);max-width:70ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:16px;font-size:13px;color:var(--muted)}
+.meta span b{color:var(--fg);font-weight:600}
+.counts{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.counts span{font-family:var(--f-mono);font-size:12px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-variant-numeric:tabular-nums}
+code,.id{font-family:var(--f-mono);font-size:12.5px}
+.id{color:var(--accent);white-space:nowrap}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface);margin:8px 0 16px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:var(--sunk);font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.nw{white-space:nowrap}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;white-space:nowrap}
+.p-ok{background:var(--ok-soft);color:var(--ok)} .p-bad{background:var(--bad-soft);color:var(--bad)} .p-warn{background:var(--warn-soft);color:var(--warn)} .p-mut{background:var(--sunk);color:var(--muted)}
+.msg{font-weight:600}
+.diagram{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;overflow-x:auto;margin:8px 0 16px}
+.diagram pre.mermaid{margin:0;background:transparent;text-align:center}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.box h4{margin:0 0 6px;font-size:14px}
+.box ul{margin:0;padding-left:18px}
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:10px 14px;border-radius:0 8px 8px 0;margin:8px 0 16px;max-width:80ch;font-size:14px}
+.note.info{border-color:var(--accent);background:var(--accent-soft)}
+.timeline{font-family:var(--f-mono);font-size:13px;background:var(--sunk);border-radius:8px;padding:12px 14px;overflow-x:auto;white-space:pre;line-height:1.7}
+.search{display:flex;gap:8px;align-items:center;margin:8px 0 12px;flex-wrap:wrap}
+.search input{font:inherit;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);min-width:0;flex:1;max-width:360px}
+.search input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.search small{color:var(--muted)}
+.prio{font-family:var(--f-mono);font-size:12px;font-weight:600}
+@media (max-width:860px){.wrap{grid-template-columns:1fr;gap:0} nav.toc{position:static;padding-block:24px 0} nav.toc ol{display:flex;flex-wrap:wrap}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="Mục lục">
+  <b>Mục lục</b>
+  <ol>
+    <li><a href="#overview">Tổng quan &amp; scope</a></li>
+    <li><a href="#flow-login">Flow đăng nhập</a></li>
+    <li><a href="#flow-reopen">Flow mở lại browser</a></li>
+    <li><a href="#flow-session">Flow trong phiên</a></li>
+    <li><a href="#flow-device">Đổi thiết bị</a></li>
+    <li><a href="#rules">Business rules</a></li>
+    <li><a href="#matrix">Ma trận sự kiện</a></li>
+    <li><a href="#messages">Message</a></li>
+    <li><a href="#usecases">Use case &amp; truy vết</a></li>
+    <li><a href="#vr">Validation &amp; AC</a></li>
+    <li><a href="#gaps">Điểm cần làm rõ</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="doc">
+  <div class="eyebrow">[C] FRD · Biz Client · Account Authentication</div>
+  <h1>Đăng nhập tài khoản Biz Client</h1>
+  <p class="lede">Bản tổng hợp user flow, business rule và logic từ FRD trên BookStack. Mọi rule đều ghi ID gốc để truy ngược về spec. Những chỗ spec không nói rõ được gắn nhãn <span class="pill p-warn">❓ Giả định</span> và gom lại ở mục cuối.</p>
+  <div class="meta">
+    <span>Phiên bản <b>v1.3</b></span>
+    <span>Cập nhật <b>24/09/2026</b></span>
+    <span>Trạng thái <b>Draft for Review</b></span>
+    <span>Hệ thống <b>Biz Client Website · Account System · Session Management</b></span>
+  </div>
+  <div class="counts"><span>14 Use case</span><span>32 BR</span><span>49 FR</span><span>24 VR</span><span>33 AC</span></div>
+</header>
+
+<section id="overview">
+<h2>Tổng quan &amp; scope</h2>
+<p>Biz Client đã có Account đăng nhập bằng <b>Email đã đăng ký + Password</b>. Chỉ Account <b>Active</b> được vào hệ thống. Mỗi Account chỉ có <b>01 phiên</b> tại một thời điểm. Phiên hết hạn sau <b>60 phút không thao tác</b> khi browser vẫn mở. <b>Ghi nhớ đăng nhập</b> cho phép tự đăng nhập lại sau khi đóng/mở browser, tối đa <b>14 ngày</b>.</p>
+<div class="cols">
+  <div class="box"><h4>Các con số chốt</h4><ul>
+    <li>Inactivity timeout: <b>60 phút</b> liên tục, tính lại từ thao tác hợp lệ gần nhất</li>
+    <li>Remember: tối đa <b>14 ngày</b> kể từ lần login thành công có tick. Auto login không gia hạn</li>
+    <li>Số phiên / Account: <b>1</b></li>
+    <li>Giới hạn số lần login sai: <b>không có</b> (Phase 1)</li>
+  </ul></div>
+  <div class="box"><h4>Màn hình Login (FR-01–06)</h4><ul>
+    <li>Field Email</li><li>Field Password</li><li>Checkbox Ghi nhớ đăng nhập</li><li>Nút Đăng nhập</li><li>Link Quên mật khẩu (chỉ điều hướng sang FRD Quên mật khẩu)</li>
+  </ul></div>
+  <div class="box"><h4>Pre-condition</h4><ul>
+    <li>Account đã được tạo trên hệ thống</li>
+    <li>Username = Email đã đăng ký. Không hỗ trợ SĐT (BR-LOGIN-02)</li>
+  </ul></div>
+</div>
+<h3>Scope</h3>
+<div class="cols">
+  <div class="box"><h4><span class="pill p-ok">In scope</span></h4><ul>
+    <li>Login Email + Password, validate required và format</li>
+    <li>Chuẩn hóa Email (trim, không phân biệt hoa/thường)</li>
+    <li>Account Status Active / Deactive / Blocked, kể cả bị khóa khi đang có phiên</li>
+    <li>Generic message khi sai credential</li>
+    <li>Ghi nhớ đăng nhập 14 ngày</li>
+    <li>Session timeout 60 phút; phân biệt với việc đóng browser; định nghĩa thao tác hợp lệ</li>
+    <li>1 phiên / Account, nhiều tab, concurrent login, login trên device mới, hành vi trên device cũ</li>
+    <li>Login lại trên cùng device có/không Remember</li>
+    <li>Trạng thái đang xử lý, chống double-submit, lỗi hệ thống</li>
+    <li>Audit Login và Session</li>
+  </ul></div>
+  <div class="box"><h4><span class="pill p-mut">Out of scope</span></h4><ul>
+    <li>Forgot / Change Password, Logout</li>
+    <li>MFA, OTP Login, CAPTCHA, Social Login</li>
+    <li>Lockout theo số lần sai, Password Expiration, Consent</li>
+    <li>Thiết kế Access/Refresh Token, cơ chế lưu session, locking/transaction, rate limiting</li>
+    <li>UI automation ID (data-testid…)</li>
+  </ul></div>
+</div>
+</section>
+
+<section id="flow-login">
+<h2>Flow 1 · Submit đăng nhập</h2>
+<p>Thứ tự kiểm tra là cố định: validate input → xác thực credential → kiểm tra Status → xử lý phiên cũ → tạo phiên → lưu/không lưu Remember. Status chỉ được kiểm tra <b>sau khi</b> credential đúng (BR-STATUS-01). Vì vậy Account bị khóa mà nhập sai Password vẫn nhận message chung.</p>
+<div class="diagram"><pre class="mermaid">
+flowchart TD
+  A["Màn hình Đăng nhập"] --> B["Nhập Email + Password<br/>tick / không tick Ghi nhớ"]
+  B --> C["Bấm Đăng nhập<br/>hiển thị đang xử lý, chặn submit trùng"]
+  C --> V{"Validate input"}
+  V -- "Email trống" --> E1["Vui lòng nhập Email."]
+  V -- "Password trống" --> E2["Vui lòng nhập mật khẩu."]
+  V -- "Email sai format" --> E3["Email không đúng định dạng."]
+  V -- "Hợp lệ" --> N["Trim đầu/cuối Email, so khớp không phân biệt hoa/thường<br/>Password giữ nguyên, không trim"]
+  N --> K{"Email + Password đúng?"}
+  K -- "Không" --> E4["Email hoặc mật khẩu không chính xác.<br/>Không tạo phiên, phiên ở device khác giữ nguyên"]
+  K -- "Có" --> S{"Account Status"}
+  S -- "Deactive / Blocked" --> E5["Tài khoản hiện tại đã bị khóa.<br/>Không tạo phiên"]
+  S -- "Active" --> P{"Account đang có phiên khác?"}
+  P -- "Có" --> R["Vô hiệu phiên cũ<br/>+ Remember của device cũ"]
+  P -- "Không" --> T["Tạo phiên mới"]
+  R --> T
+  T --> M{"Có tick Ghi nhớ?"}
+  M -- "Có" --> M1["Lưu Remember cho browser/device<br/>hết hạn = lúc login + 14 ngày"]
+  M -- "Không" --> M2["Không lưu Remember<br/>xóa Remember cũ trên device này nếu có"]
+  M1 --> OK["Login thành công"]
+  M2 --> OK
+  C -. "Lỗi hệ thống / dependency" .-> E6["Hệ thống đang gặp sự cố. Vui lòng thử lại sau.<br/>Không tạo phiên, không revoke phiên device khác"]
+</pre></div>
+</section>
+
+<section id="flow-reopen">
+<h2>Flow 2 · Đóng rồi mở lại browser</h2>
+<p>Đóng browser <b>không</b> được tính là inactivity 60 phút (BR-TIME-04). Khi mở lại, hệ thống chỉ xét trạng thái Ghi nhớ đăng nhập (BR-TIME-06, Section 5.8).</p>
+<div class="diagram"><pre class="mermaid">
+flowchart TD
+  A["User mở lại browser và vào Biz Client"] --> B{"Browser/device có Remember?"}
+  B -- "Không: lúc login không tick,<br/>hoặc đã bị xóa" --> L["Màn hình Login<br/>nhập Email + Password"]
+  B -- "Có" --> C{"Còn trong 14 ngày?"}
+  C -- "Quá 14 ngày" --> L
+  C -- "Còn hạn" --> D{"Remember đã bị vô hiệu?<br/>login thành công ở device khác,<br/>reset password,<br/>login lại cùng device không tick"}
+  D -- "Có" --> L
+  D -- "Không" --> E{"Account = Active?"}
+  E -- "Deactive / Blocked" --> L
+  E -- "Active" --> F["Auto Login<br/>không nhập lại Email + Password<br/>hạn 14 ngày KHÔNG đổi"]
+</pre></div>
+<div class="timeline">01/08  User login, có tick Remember   → Remember hết hạn 15/08
+05/08  Đóng browser, mở lại           → Auto Login, hạn vẫn là 15/08 (BR-REMEMBER-01)
+16/08  Mở browser                     → Remember hết hạn, phải nhập Email + Password</div>
+</section>
+
+<section id="flow-session">
+<h2>Flow 3 · Mỗi lần thao tác trong phiên</h2>
+<p>Có ba lý do làm phiên đang dùng mất hiệu lực. Mỗi lý do có message và cách xử lý Remember riêng.</p>
+<div class="diagram"><pre class="mermaid">
+flowchart TD
+  A["User thao tác trên browser đang mở"] --> B{"Phiên đã bị login<br/>ở device khác thay thế?"}
+  B -- "Có" --> X1["Về Login:<br/>Tài khoản của bạn đã được đăng nhập trên thiết bị khác.<br/>Vui lòng đăng nhập lại."]
+  B -- "Không" --> C{"Account còn Active?"}
+  C -- "Không" --> X2["Phiên mất hiệu lực, về Login:<br/>Tài khoản hiện tại đã bị khóa."]
+  C -- "Có" --> D{"Đủ 60 phút từ<br/>thao tác hợp lệ gần nhất?"}
+  D -- "Có" --> X3["Phiên hết hạn, yêu cầu login lại bằng Email + Password<br/>Remember KHÔNG bị xóa<br/>và KHÔNG được dùng để khôi phục phiên"]
+  D -- "Không" --> E["Cho phép thao tác<br/>nếu là thao tác hợp lệ thì tính lại mốc 60 phút"]
+</pre></div>
+<p class="note"><b>❓ Giả định:</b> spec không quy định thứ tự kiểm tra ba điều kiện trên. Sơ đồ đang giả định thứ tự "bị thay thế → bị khóa → timeout". Cần chốt message nào được ưu tiên khi nhiều điều kiện xảy ra cùng lúc (xem Q-07).</p>
+
+<h3>Thao tác hợp lệ (5.7.1)</h3>
+<div class="cols">
+  <div class="box"><h4><span class="pill p-ok">Có tính lại 60 phút</span></h4><ul>
+    <li>Chuyển sang màn hình/chức năng khác</li><li>Tạo dữ liệu, cập nhật dữ liệu</li><li>Submit form</li><li>Tìm kiếm, filter</li><li>Thực hiện action nghiệp vụ</li><li>…"bao gồm nhưng không giới hạn": mọi hành động chủ động của User</li>
+  </ul></div>
+  <div class="box"><h4><span class="pill p-bad">Không tính</span></h4><ul>
+    <li>Polling</li><li>Auto refresh</li><li>Background synchronization</li><li>Timer</li><li>Request nền không bắt nguồn từ action của User</li>
+  </ul></div>
+</div>
+<div class="timeline">09:00  User login
+09:30  User tạo đơn hàng              → mốc 60 phút tính lại từ 09:30
+10:30  Browser vẫn mở, không thao tác → phiên hết hiệu lực
+10:31  User bấm tiếp                  → yêu cầu login lại (Remember, nếu có, vẫn còn)</div>
+</section>
+
+<section id="flow-device">
+<h2>Flow 4 · Một Account, hai thiết bị</h2>
+<div class="diagram"><pre class="mermaid">
+sequenceDiagram
+  participant A as Device A
+  participant S as Hệ thống
+  participant B as Device B
+  A->>S: Login thành công (có/không Remember)
+  Note over A,S: A là phiên hiện tại
+  B->>S: Login sai credential hoặc gặp lỗi hệ thống
+  S-->>B: Báo lỗi, không tạo phiên
+  Note over A: A vẫn dùng bình thường (BR-SESSION-05, BR-ERROR-02)
+  B->>S: Login đúng và Account Active
+  S->>S: Vô hiệu phiên A và Remember của A
+  S-->>B: Login thành công, B là phiên hiện tại
+  A->>S: Thao tác bất kỳ
+  S-->>A: Về Login với message "đã được đăng nhập trên thiết bị khác"
+  A->>S: Đóng và mở lại browser
+  S-->>A: Không Auto Login vì Remember của A đã mất
+</pre></div>
+<div class="cols">
+  <div class="box"><h4>Nhiều tab, cùng browser</h4><p style="margin:0">Các tab dùng chung một phiên và không vô hiệu hóa lẫn nhau (BR-SESSION-06). Ví dụ Chrome: Tab 1 Danh sách đơn hàng, Tab 2 Tạo đơn hàng.</p></div>
+  <div class="box"><h4>Concurrent login</h4><p style="margin:0">Nhiều login hợp lệ gần như đồng thời thì sau khi xử lý xong <b>chỉ còn 01 phiên hiệu lực</b> (BR-SESSION-07). Spec không nói phiên nào được giữ lại.</p></div>
+</div>
+</section>
+
+<section id="rules">
+<h2>Business rules</h2>
+<div class="search"><label for="q">Lọc rule</label><input id="q" type="search" placeholder="vd: Remember, 60, BR-SESSION, FR-4…"><small id="qcount"></small></div>
+<div class="tbl"><table class="filterable">
+<thead><tr><th>ID</th><th>Nhóm</th><th>Rule</th><th>FR / AC</th></tr></thead>
+<tbody>
+<tr><td class="id">BR-LOGIN-01</td><td>Input</td><td>Username đăng nhập là Email đã đăng ký với Account.</td><td class="nw"><code>FR-07,13</code></td></tr>
+<tr><td class="id">BR-LOGIN-02</td><td>Input</td><td>Không hỗ trợ login bằng SĐT.</td><td>—</td></tr>
+<tr><td class="id">BR-LOGIN-03</td><td>Input</td><td>Trim khoảng trắng đầu/cuối Email trước khi xác thực.</td><td class="nw"><code>FR-10 · AC-05</code></td></tr>
+<tr><td class="id">BR-LOGIN-04</td><td>Input</td><td>Email không phân biệt hoa/thường (<code>User@Company.com</code> = <code>user@company.com</code>).</td><td class="nw"><code>FR-11 · AC-06</code></td></tr>
+<tr><td class="id">BR-LOGIN-05</td><td>Input</td><td>Dùng chính xác Password User nhập để xác thực.</td><td class="nw"><code>FR-12 · AC-07</code></td></tr>
+<tr><td class="id">BR-LOGIN-06</td><td>Input</td><td>Không tự động trim Password.</td><td class="nw"><code>FR-12 · AC-07</code></td></tr>
+<tr><td class="id">§5.3</td><td>Credential</td><td>Email không tồn tại hoặc Password sai: dùng <b>cùng một</b> message "Email hoặc mật khẩu không chính xác.", không báo riêng từng trường hợp.</td><td class="nw"><code>FR-14–15 · AC-08–09</code></td></tr>
+<tr><td class="id">BR-STATUS-01</td><td>Status</td><td>Chỉ xét Account Status sau khi Email + Password đã đúng. Chỉ Active được login.</td><td class="nw"><code>FR-16–19 · AC-10–12</code></td></tr>
+<tr><td class="id">BR-STATUS-02</td><td>Status</td><td>Account chuyển Deactive/Blocked khi đang có phiên thì không được truy cập tiếp chức năng cần Authentication.</td><td class="nw"><code>FR-20 · AC-13</code></td></tr>
+<tr><td class="id">BR-STATUS-03</td><td>Status</td><td>Khi phát hiện Account không còn Active, phiên hiện tại mất hiệu lực. FRD không quy định cơ chế phát hiện.</td><td class="nw"><code>FR-20 · AC-13</code></td></tr>
+<tr><td class="id">BR-STATUS-04</td><td>Status</td><td>Chuyển User về Login Page.</td><td class="nw"><code>AC-13</code></td></tr>
+<tr><td class="id">BR-STATUS-05</td><td>Status</td><td>Hiển thị "Tài khoản hiện tại đã bị khóa."</td><td class="nw"><code>AC-13</code></td></tr>
+<tr><td class="id">§5.5</td><td>Failed</td><td>Phase 1: không giới hạn số lần thử, không tự khóa Account, không CAPTCHA.</td><td class="nw"><code>FR-21–22 · AC-14</code></td></tr>
+<tr><td class="id">BR-FAIL-01</td><td>Failed</td><td>Login sai không tạo phiên mới.</td><td class="nw"><code>AC-08–09</code></td></tr>
+<tr><td class="id">BR-FAIL-02</td><td>Failed</td><td>Login sai trên một browser/device không ảnh hưởng phiên ở browser/device khác.</td><td class="nw"><code>FR-23 · AC-16</code></td></tr>
+<tr><td class="id">BR-SESSION-01</td><td>Session</td><td>Một Account không được dùng đồng thời trên nhiều browser/device.</td><td class="nw"><code>FR-24</code></td></tr>
+<tr><td class="id">BR-SESSION-02</td><td>Session</td><td>Login mới chỉ thay phiên cũ sau khi credential đúng <b>và</b> Account Active.</td><td class="nw"><code>FR-25</code></td></tr>
+<tr><td class="id">BR-SESSION-03</td><td>Session</td><td>Login mới thành công thì vô hiệu phiên cũ.</td><td class="nw"><code>FR-26 · AC-15</code></td></tr>
+<tr><td class="id">BR-SESSION-04</td><td>Session</td><td>Login mới thành công thì vô hiệu cả Remember của device cũ.</td><td class="nw"><code>FR-27,43 · AC-15,29</code></td></tr>
+<tr><td class="id">BR-SESSION-05</td><td>Session</td><td>Login thất bại trên device mới không ảnh hưởng phiên hiện tại.</td><td class="nw"><code>FR-23 · AC-16</code></td></tr>
+<tr><td class="id">§5.6.1</td><td>Session</td><td>Device có phiên đã bị thay thế: chặn truy cập, về Login, message "đăng nhập trên thiết bị khác".</td><td class="nw"><code>FR-28 · AC-17</code></td></tr>
+<tr><td class="id">BR-SESSION-06</td><td>Session</td><td>Các tab trong cùng browser/session không vô hiệu hóa lẫn nhau.</td><td class="nw"><code>FR-29 · AC-18</code></td></tr>
+<tr><td class="id">BR-SESSION-07</td><td>Session</td><td>Nhiều login đồng thời thì sau xử lý chỉ còn 01 phiên hiệu lực.</td><td class="nw"><code>FR-30 · AC-19</code></td></tr>
+<tr><td class="id">BR-TIME-01</td><td>Timeout</td><td>Kết thúc phiên nếu không có thao tác hợp lệ trong 60 phút liên tục khi browser vẫn mở.</td><td class="nw"><code>FR-31 · AC-20</code></td></tr>
+<tr><td class="id">BR-TIME-02</td><td>Timeout</td><td>Mỗi thao tác hợp lệ tính lại mốc 60 phút.</td><td class="nw"><code>FR-32 · AC-21</code></td></tr>
+<tr><td class="id">BR-TIME-03</td><td>Timeout</td><td>Phiên đã timeout mà User thao tác tiếp trên browser đang mở thì phải login lại bằng Email + Password.</td><td class="nw"><code>FR-34 · AC-23</code></td></tr>
+<tr><td class="id">BR-TIME-04</td><td>Timeout</td><td>Đóng browser không được tính là inactivity.</td><td class="nw"><code>AC-24–25</code></td></tr>
+<tr><td class="id">BR-TIME-05</td><td>Timeout</td><td>Timeout do inactivity không tự xóa Remember.</td><td class="nw"><code>FR-35 · AC-23</code></td></tr>
+<tr><td class="id">BR-TIME-06</td><td>Timeout</td><td>Đóng rồi mở lại browser thì Auto Login xử lý theo trạng thái Remember (5.8).</td><td class="nw"><code>FR-37–38</code></td></tr>
+<tr><td class="id">UC-11</td><td>Timeout</td><td>Remember không được dùng để tự khôi phục ngay phiên vừa timeout trên browser đang mở.</td><td class="nw"><code>AC-23</code></td></tr>
+<tr><td class="id">FR-33</td><td>Timeout</td><td>Polling/background request không được tính là thao tác hợp lệ.</td><td class="nw"><code>VR-17 · AC-22</code></td></tr>
+<tr><td class="id">§5.8.1</td><td>Remember</td><td>Không tick: đóng browser thì mất trạng thái login, mở lại phải nhập Email + Password.</td><td class="nw"><code>FR-37 · AC-24</code></td></tr>
+<tr><td class="id">§5.8.2</td><td>Remember</td><td>Có tick: đóng/mở lại <b>cùng</b> browser/device thì được Auto Login. Hiệu lực tối đa 14 ngày tính từ lần login thành công có tick.</td><td class="nw"><code>FR-38–40 · AC-25</code></td></tr>
+<tr><td class="id">BR-REMEMBER-01</td><td>Remember</td><td>Auto Login không làm thời hạn 14 ngày bắt đầu lại.</td><td class="nw"><code>FR-41 · AC-26</code></td></tr>
+<tr><td class="id">FR-42</td><td>Remember</td><td>Kiểm tra Account Status trước khi Auto Login.</td><td class="nw"><code>AC-28</code></td></tr>
+<tr><td class="id">§5.8.4</td><td>Remember</td><td>Remember mất hiệu lực khi: quá 14 ngày, Account Deactive/Blocked, login thành công ở device khác, reset password (FRD Quên MK), login lại cùng device không tick. <b>Không</b> mất khi timeout 60 phút.</td><td class="nw"><code>FR-39,43–44</code></td></tr>
+<tr><td class="id">§5.8.5</td><td>Remember</td><td>Device đang có Remember, login lại không tick thì xóa Remember cũ.</td><td class="nw"><code>FR-44 · AC-30</code></td></tr>
+<tr><td class="id">BR-PROCESS-01</td><td>Processing</td><td>Hiển thị trạng thái login đang xử lý (không quy định spinner hay loading button).</td><td class="nw"><code>FR-45 · AC-31</code></td></tr>
+<tr><td class="id">BR-PROCESS-02</td><td>Processing</td><td>Bấm Đăng nhập nhiều lần khi request trước chưa xong không tạo request trùng.</td><td class="nw"><code>FR-46 · AC-31</code></td></tr>
+<tr><td class="id">BR-ERROR-01</td><td>Error</td><td>Lỗi hệ thống/dependency: không tạo phiên mới.</td><td class="nw"><code>FR-47 · AC-32</code></td></tr>
+<tr><td class="id">BR-ERROR-02</td><td>Error</td><td>Lỗi hệ thống: không vô hiệu phiên hiện hữu ở device khác.</td><td class="nw"><code>FR-48 · AC-32</code></td></tr>
+<tr><td class="id">BR-ERROR-03</td><td>Error</td><td>Thông báo login chưa hoàn tất và cho phép thử lại.</td><td class="nw"><code>FR-49 · AC-33</code></td></tr>
+</tbody></table></div>
+
+<h3>Bảng quyết định: kết quả Login</h3>
+<div class="tbl"><table>
+<thead><tr><th>Credentials</th><th>Account Status</th><th>Login</th><th>Message</th><th>Phiên ở device khác</th></tr></thead>
+<tbody>
+<tr><td>Sai (Email không tồn tại / Password sai)</td><td>Không tiết lộ</td><td><span class="pill p-bad">Không</span></td><td class="msg">Email hoặc mật khẩu không chính xác.</td><td>Giữ nguyên</td></tr>
+<tr><td>Đúng</td><td>Active</td><td><span class="pill p-ok">Có</span></td><td>—</td><td>Bị vô hiệu + mất Remember</td></tr>
+<tr><td>Đúng</td><td>Deactive</td><td><span class="pill p-bad">Không</span></td><td class="msg">Tài khoản hiện tại đã bị khóa.</td><td>❓ Chưa quy định (xem Q-09)</td></tr>
+<tr><td>Đúng</td><td>Blocked</td><td><span class="pill p-bad">Không</span></td><td class="msg">Tài khoản hiện tại đã bị khóa.</td><td>❓ Chưa quy định (xem Q-09)</td></tr>
+<tr><td>Bất kỳ</td><td>Lỗi hệ thống</td><td><span class="pill p-bad">Không</span></td><td class="msg">Hệ thống đang gặp sự cố. Vui lòng thử lại sau.</td><td>Giữ nguyên</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="matrix">
+<h2>Ma trận sự kiện → Session / Remember</h2>
+<p>Bảng này gom các rule rải rác trong 5.6–5.8. Nhìn vào đây là biết mỗi sự kiện ảnh hưởng thế nào tới phiên hiện tại và trạng thái Ghi nhớ.</p>
+<div class="tbl"><table>
+<thead><tr><th>Sự kiện</th><th>Phiên hiện tại</th><th>Remember</th><th>Nguồn</th></tr></thead>
+<tbody>
+<tr><td>Login thành công ở browser/device khác</td><td><span class="pill p-bad">Vô hiệu</span></td><td><span class="pill p-bad">Vô hiệu</span></td><td><code>BR-SESSION-03/04</code></td></tr>
+<tr><td>Login sai credential ở device khác</td><td><span class="pill p-ok">Giữ</span></td><td><span class="pill p-ok">Giữ</span></td><td><code>BR-FAIL-02, BR-SESSION-05</code></td></tr>
+<tr><td>Login ở device khác gặp lỗi hệ thống</td><td><span class="pill p-ok">Giữ</span></td><td><span class="pill p-ok">Giữ</span> <small>❓ suy luận</small></td><td><code>BR-ERROR-02</code></td></tr>
+<tr><td>Không thao tác 60 phút (browser mở)</td><td><span class="pill p-bad">Hết hạn</span></td><td><span class="pill p-ok">Giữ</span></td><td><code>BR-TIME-01/05</code></td></tr>
+<tr><td>Đóng browser, không Remember</td><td><span class="pill p-bad">Không duy trì</span></td><td>—</td><td><code>5.8.1</code></td></tr>
+<tr><td>Đóng browser, có Remember</td><td>Không tính inactivity</td><td><span class="pill p-ok">Giữ</span>, Auto Login khi mở lại</td><td><code>5.8.2</code></td></tr>
+<tr><td>Account chuyển Deactive/Blocked</td><td><span class="pill p-bad">Vô hiệu</span> khi phát hiện</td><td><span class="pill p-bad">Vô hiệu</span></td><td><code>BR-STATUS-03, 5.8.4</code></td></tr>
+<tr><td>Reset password (FRD Quên MK)</td><td><span class="pill p-warn">❓ Chưa quy định</span></td><td><span class="pill p-bad">Vô hiệu</span></td><td><code>5.8.4</code></td></tr>
+<tr><td>Login lại cùng device, không tick</td><td>Phiên mới</td><td><span class="pill p-bad">Xóa</span></td><td><code>5.8.5, FR-44</code></td></tr>
+<tr><td>Login lại cùng device, có tick</td><td>Phiên mới</td><td>Remember mới, hạn 14 ngày tính lại <small>❓ suy luận từ 5.8.2</small></td><td><code>FR-40</code></td></tr>
+<tr><td>Auto Login</td><td>Phiên mới</td><td><span class="pill p-ok">Giữ</span>, hạn không đổi</td><td><code>BR-REMEMBER-01</code></td></tr>
+<tr><td>Quá 14 ngày</td><td>—</td><td><span class="pill p-bad">Hết hạn</span></td><td><code>FR-39</code></td></tr>
+<tr><td>Mở tab mới cùng browser</td><td>Dùng chung phiên</td><td><span class="pill p-ok">Giữ</span></td><td><code>BR-SESSION-06</code></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="messages">
+<h2>Danh mục message</h2>
+<div class="tbl"><table>
+<thead><tr><th>Tình huống</th><th>Message</th><th>Vị trí</th><th>Nguồn</th></tr></thead>
+<tbody>
+<tr><td>Email trống</td><td class="msg">Vui lòng nhập Email.</td><td>Màn Login</td><td><code>AC-02</code></td></tr>
+<tr><td>Password trống</td><td class="msg">Vui lòng nhập mật khẩu.</td><td>Màn Login</td><td><code>AC-03</code></td></tr>
+<tr><td>Email sai format</td><td class="msg">Email không đúng định dạng.</td><td>Màn Login</td><td><code>AC-04</code></td></tr>
+<tr><td>Email không tồn tại / Password sai</td><td class="msg">Email hoặc mật khẩu không chính xác.</td><td>Màn Login</td><td><code>FR-15</code></td></tr>
+<tr><td>Account Deactive/Blocked, lúc login hoặc đang trong phiên</td><td class="msg">Tài khoản hiện tại đã bị khóa.</td><td>Màn Login (sau redirect)</td><td><code>FR-19, BR-STATUS-05</code></td></tr>
+<tr><td>Phiên bị device khác thay thế</td><td class="msg">Tài khoản của bạn đã được đăng nhập trên thiết bị khác. Vui lòng đăng nhập lại.</td><td>Màn Login (sau redirect)</td><td><code>FR-28</code></td></tr>
+<tr><td>Lỗi hệ thống / dependency</td><td class="msg">Hệ thống đang gặp sự cố. Vui lòng thử lại sau.</td><td>Màn Login</td><td><code>5.10</code> <span class="pill p-warn">Đề xuất</span></td></tr>
+<tr><td>Phiên hết hạn do 60 phút</td><td><span class="pill p-warn">❓ Chưa có message</span></td><td>—</td><td><code>Q-01</code></td></tr>
+<tr><td>Auto Login bị từ chối (hết hạn / bị khóa / bị thay thế)</td><td><span class="pill p-warn">❓ Chưa có message</span></td><td>—</td><td><code>Q-06</code></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="usecases">
+<h2>Use case &amp; truy vết</h2>
+<div class="tbl"><table class="filterable">
+<thead><tr><th>UC</th><th>Tình huống</th><th>Kết quả mong đợi</th><th>BR / FR</th><th>VR / AC</th></tr></thead>
+<tbody>
+<tr><td class="id">UC-01</td><td>Email + Password đúng, Active</td><td>Tạo phiên, vào Biz Client</td><td class="nw"><code>FR-01–13, 16–17</code></td><td class="nw"><code>VR-09 · AC-01,10</code></td></tr>
+<tr><td class="id">UC-02</td><td>Email không tồn tại hoặc Password sai</td><td>Không tạo phiên, message chung</td><td class="nw"><code>§5.3 · FR-14–15</code></td><td class="nw"><code>VR-07–08 · AC-08–09</code></td></tr>
+<tr><td class="id">UC-03</td><td>Credential đúng, Deactive/Blocked</td><td>Không tạo phiên, "Tài khoản hiện tại đã bị khóa."</td><td class="nw"><code>BR-STATUS-01 · FR-16–19</code></td><td class="nw"><code>VR-10 · AC-11–12</code></td></tr>
+<tr><td class="id">UC-04</td><td>Bị khóa khi đang dùng</td><td>Phiên mất hiệu lực, về Login, message khóa</td><td class="nw"><code>BR-STATUS-02–05 · FR-20</code></td><td class="nw"><code>VR-10 · AC-13</code></td></tr>
+<tr><td class="id">UC-05</td><td>Login trên device mới khi device cũ đang login</td><td>B thành phiên hiện tại; phiên A và Remember A bị vô hiệu</td><td class="nw"><code>BR-SESSION-01–04 · FR-24–27</code></td><td class="nw"><code>VR-11 · AC-15,29</code></td></tr>
+<tr><td class="id">UC-06</td><td>Tiếp tục dùng device cũ</td><td>Chặn, về Login, message "thiết bị khác"</td><td class="nw"><code>§5.6.1 · FR-28</code></td><td class="nw"><code>AC-17</code></td></tr>
+<tr><td class="id">UC-07</td><td>Nhiều tab cùng browser</td><td>Dùng chung phiên, không đá nhau</td><td class="nw"><code>BR-SESSION-06 · FR-29</code></td><td class="nw"><code>VR-13 · AC-18</code></td></tr>
+<tr><td class="id">UC-08</td><td>Nhiều login gần như đồng thời</td><td>Cuối cùng chỉ còn 01 phiên</td><td class="nw"><code>BR-SESSION-07 · FR-30</code></td><td class="nw"><code>VR-14 · AC-19</code></td></tr>
+<tr><td class="id">UC-09</td><td>Có tick Remember, đóng/mở lại browser trong 14 ngày</td><td>Auto Login nếu Active, không có login mới hơn ở nơi khác, Remember chưa bị vô hiệu</td><td class="nw"><code>§5.8.2, BR-REMEMBER-01 · FR-36,38–42</code></td><td class="nw"><code>VR-19,21 · AC-25,26,28</code></td></tr>
+<tr><td class="id">UC-10</td><td>Không tick, đóng/mở lại browser</td><td>Phải login lại</td><td class="nw"><code>§5.8.1 · FR-37</code></td><td class="nw"><code>AC-24</code></td></tr>
+<tr><td class="id">UC-11</td><td>Không thao tác 60 phút, browser mở</td><td>Phiên hết hạn, login lại khi thao tác; Remember giữ nguyên</td><td class="nw"><code>BR-TIME-01–06 · FR-31–35</code></td><td class="nw"><code>VR-15–18 · AC-20–23</code></td></tr>
+<tr><td class="id">UC-12</td><td>Login lại cùng device, bỏ tick</td><td>Xóa Remember cũ</td><td class="nw"><code>§5.8.5 · FR-44</code></td><td class="nw"><code>VR-22 · AC-30</code></td></tr>
+<tr><td class="id">UC-13</td><td>Remember quá 14 ngày</td><td>Phải nhập Email + Password</td><td class="nw"><code>§5.8.4 · FR-39</code></td><td class="nw"><code>VR-20 · AC-27</code></td></tr>
+<tr><td class="id">UC-14</td><td>Lỗi hệ thống khi login</td><td>Không tạo phiên, không revoke phiên khác, báo lỗi, cho thử lại</td><td class="nw"><code>BR-ERROR-01–03 · FR-47–49</code></td><td class="nw"><code>VR-24 · AC-32–33</code></td></tr>
+<tr><td class="id">—</td><td>Đang xử lý / double-submit</td><td>Hiển thị đang xử lý, không tạo request trùng</td><td class="nw"><code>BR-PROCESS-01–02 · FR-45–46</code></td><td class="nw"><code>VR-23 · AC-31</code></td></tr>
+<tr><td class="id">—</td><td>Login sai nhiều lần</td><td>Vẫn cho thử, không tự khóa</td><td class="nw"><code>§5.5, BR-FAIL-01–02 · FR-21–23</code></td><td class="nw"><code>VR-12 · AC-14,16</code></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="vr">
+<h2>Validation rules &amp; Acceptance criteria</h2>
+<h3>Validation rules</h3>
+<div class="tbl"><table class="filterable">
+<thead><tr><th>ID</th><th>Điều kiện</th><th>Kết quả</th><th>FR</th></tr></thead>
+<tbody>
+<tr><td class="id">VR-01</td><td>Email trống</td><td>Không cho Login</td><td><code>FR-07</code></td></tr>
+<tr><td class="id">VR-02</td><td>Password trống</td><td>Không cho Login</td><td><code>FR-08</code></td></tr>
+<tr><td class="id">VR-03</td><td>Email sai format</td><td>Không cho Login</td><td><code>FR-09</code></td></tr>
+<tr><td class="id">VR-04</td><td>Email có space đầu/cuối</td><td>Bỏ space rồi tiếp tục</td><td><code>FR-10</code></td></tr>
+<tr><td class="id">VR-05</td><td>Email khác casing</td><td>Vẫn xác định đúng Account</td><td><code>FR-11</code></td></tr>
+<tr><td class="id">VR-06</td><td>Password có space đầu/cuối</td><td>Giữ nguyên giá trị</td><td><code>FR-12</code></td></tr>
+<tr><td class="id">VR-07</td><td>Email không tồn tại</td><td>Generic credential error</td><td><code>FR-14–15</code></td></tr>
+<tr><td class="id">VR-08</td><td>Password sai</td><td>Generic credential error</td><td><code>FR-14–15</code></td></tr>
+<tr><td class="id">VR-09</td><td>Account Active</td><td>Login</td><td><code>FR-17</code></td></tr>
+<tr><td class="id">VR-10</td><td>Account Deactive/Blocked</td><td>Không Login / không truy cập tiếp</td><td><code>FR-18–20</code></td></tr>
+<tr><td class="id">VR-11</td><td>Có phiên khác + login mới thành công</td><td>Thay thế phiên cũ</td><td><code>FR-24–27</code></td></tr>
+<tr><td class="id">VR-12</td><td>Login mới thất bại</td><td>Giữ nguyên phiên cũ</td><td><code>FR-23</code></td></tr>
+<tr><td class="id">VR-13</td><td>Nhiều tab cùng browser</td><td>Dùng chung Session</td><td><code>FR-29</code></td></tr>
+<tr><td class="id">VR-14</td><td>Login đồng thời</td><td>Sau xử lý chỉ còn 1 phiên</td><td><code>FR-30</code></td></tr>
+<tr><td class="id">VR-15</td><td>Browser mở, không thao tác 60 phút</td><td>Session hết hiệu lực</td><td><code>FR-31</code></td></tr>
+<tr><td class="id">VR-16</td><td>User thao tác hợp lệ</td><td>Tính lại 60 phút</td><td><code>FR-32</code></td></tr>
+<tr><td class="id">VR-17</td><td>Background request</td><td>Không tính lại 60 phút</td><td><code>FR-33</code></td></tr>
+<tr><td class="id">VR-18</td><td>Session hết do inactivity</td><td>Remember không tự mất hiệu lực</td><td><code>FR-35</code></td></tr>
+<tr><td class="id">VR-19</td><td>Remember ≤ 14 ngày</td><td>Còn hiệu lực</td><td><code>FR-39–40</code></td></tr>
+<tr><td class="id">VR-20</td><td>Remember &gt; 14 ngày</td><td>Không Auto Login</td><td><code>FR-39</code></td></tr>
+<tr><td class="id">VR-21</td><td>Auto Login</td><td>Không đổi expiry date</td><td><code>FR-41</code></td></tr>
+<tr><td class="id">VR-22</td><td>Login lại nhưng bỏ Remember</td><td>Xóa Remember cũ</td><td><code>FR-44</code></td></tr>
+<tr><td class="id">VR-23</td><td>Login đang xử lý</td><td>Không tạo request trùng</td><td><code>FR-46</code></td></tr>
+<tr><td class="id">VR-24</td><td>System failure</td><td>Không tạo/revoke Session</td><td><code>FR-47–49</code></td></tr>
+</tbody></table></div>
+
+<h3>Acceptance criteria</h3>
+<div class="tbl"><table class="filterable">
+<thead><tr><th>AC</th><th>Given</th><th>When</th><th>Then</th></tr></thead>
+<tbody>
+<tr><td class="id">AC-01</td><td>Truy cập Login Page</td><td>Page load</td><td>Hiển thị Email, Password, Ghi nhớ, Đăng nhập, Quên mật khẩu</td></tr>
+<tr><td class="id">AC-02</td><td>Email trống</td><td>Bấm Đăng nhập</td><td>"Vui lòng nhập Email."</td></tr>
+<tr><td class="id">AC-03</td><td>Password trống</td><td>Bấm Đăng nhập</td><td>"Vui lòng nhập mật khẩu."</td></tr>
+<tr><td class="id">AC-04</td><td>Email sai format</td><td>Bấm Đăng nhập</td><td>"Email không đúng định dạng."</td></tr>
+<tr><td class="id">AC-05</td><td>Email có space đầu/cuối, phần còn lại hợp lệ</td><td>Login</td><td>Trim trước khi xác thực</td></tr>
+<tr><td class="id">AC-06</td><td>Email khác hoa/thường, Password đúng</td><td>Login</td><td>Xác định đúng Account</td></tr>
+<tr><td class="id">AC-07</td><td>Password có khoảng trắng</td><td>Login</td><td>Dùng nguyên giá trị, không trim</td></tr>
+<tr><td class="id">AC-08</td><td>Email không tồn tại</td><td>Login</td><td>Không tạo phiên, message chung</td></tr>
+<tr><td class="id">AC-09</td><td>Email tồn tại, Password sai</td><td>Login</td><td>Không tạo phiên, cùng message chung</td></tr>
+<tr><td class="id">AC-10</td><td>Credential đúng + Active</td><td>Login</td><td>Thành công</td></tr>
+<tr><td class="id">AC-11</td><td>Credential đúng + Deactive</td><td>Login</td><td>"Tài khoản hiện tại đã bị khóa."</td></tr>
+<tr><td class="id">AC-12</td><td>Credential đúng + Blocked</td><td>Login</td><td>"Tài khoản hiện tại đã bị khóa."</td></tr>
+<tr><td class="id">AC-13</td><td>Đang login, Account chuyển Deactive/Blocked</td><td>Thao tác tiếp</td><td>Chặn, về Login, message khóa</td></tr>
+<tr><td class="id">AC-14</td><td>Login sai nhiều lần</td><td>Tiếp tục thử</td><td>Vẫn cho thử, không tự khóa</td></tr>
+<tr><td class="id">AC-15</td><td>Đang login Device A</td><td>Login thành công Device B</td><td>Phiên A và Remember A bị vô hiệu; B là phiên hiện tại</td></tr>
+<tr><td class="id">AC-16</td><td>Đang login Device A</td><td>Login thất bại Device B</td><td>A vẫn hoạt động</td></tr>
+<tr><td class="id">AC-17</td><td>A đã bị B thay thế</td><td>Thao tác trên A</td><td>Về Login, message "thiết bị khác"</td></tr>
+<tr><td class="id">AC-18</td><td>Đang login Tab 1</td><td>Mở Tab 2 cùng browser</td><td>Dùng chung phiên, không đá nhau</td></tr>
+<tr><td class="id">AC-19</td><td>Hai login hợp lệ gần như đồng thời</td><td>Xử lý xong</td><td>Chỉ còn 01 phiên</td></tr>
+<tr><td class="id">AC-20</td><td>Có phiên, browser mở</td><td>Không thao tác đủ 60 phút</td><td>Phiên hết hiệu lực</td></tr>
+<tr><td class="id">AC-21</td><td>Thao tác hợp lệ trước khi đủ 60 phút</td><td>Action hoàn tất</td><td>Tính lại 60 phút từ action gần nhất</td></tr>
+<tr><td class="id">AC-22</td><td>Không thao tác nhưng có polling/background refresh</td><td>Đủ 60 phút</td><td>Phiên vẫn hết hiệu lực</td></tr>
+<tr><td class="id">AC-23</td><td>Có Remember, browser mở, không thao tác 60 phút</td><td>Thao tác tiếp</td><td>Yêu cầu Email + Password; Remember không mất</td></tr>
+<tr><td class="id">AC-24</td><td>Không tick Remember</td><td>Đóng rồi mở browser</td><td>Yêu cầu login lại</td></tr>
+<tr><td class="id">AC-25</td><td>Có Remember còn hiệu lực</td><td>Đóng/mở cùng browser trong 14 ngày</td><td>Auto Login nếu các điều kiện khác hợp lệ</td></tr>
+<tr><td class="id">AC-26</td><td>Remember còn hiệu lực</td><td>Auto Login</td><td>Hạn 14 ngày không đổi</td></tr>
+<tr><td class="id">AC-27</td><td>Remember quá 14 ngày</td><td>Mở browser</td><td>Không Auto Login</td></tr>
+<tr><td class="id">AC-28</td><td>Remember còn hạn, Account Deactive/Blocked</td><td>Mở browser</td><td>Không Auto Login</td></tr>
+<tr><td class="id">AC-29</td><td>Device A có Remember</td><td>Login thành công Device B</td><td>Remember A mất hiệu lực</td></tr>
+<tr><td class="id">AC-30</td><td>Device đang có Remember</td><td>Login lại, bỏ tick</td><td>Xóa Remember cũ</td></tr>
+<tr><td class="id">AC-31</td><td>Bấm Login</td><td>Đang xử lý</td><td>Hiển thị trạng thái xử lý, không tạo request trùng</td></tr>
+<tr><td class="id">AC-32</td><td>Đang login Device A</td><td>Login Device B gặp lỗi hệ thống</td><td>Không tạo phiên B, không ảnh hưởng A</td></tr>
+<tr><td class="id">AC-33</td><td>Login gặp lỗi hệ thống</td><td>Request thất bại</td><td>Hiển thị lỗi, cho thử lại</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="gaps">
+<h2>Điểm cần làm rõ với BA/PO</h2>
+<p>Đây là những chỗ spec thiếu, mơ hồ hoặc có thể hiểu nhiều cách. Trang này không tự quy định rule cho các chỗ đó.</p>
+<div class="tbl"><table class="filterable">
+<thead><tr><th>#</th><th>Ưu tiên</th><th>Loại</th><th>Câu hỏi</th><th>Liên quan</th></tr></thead>
+<tbody>
+<tr><td class="id">Q-01</td><td><span class="prio" style="color:var(--bad)">Cao</span></td><td>Missing</td><td>Phiên hết hạn do 60 phút: hiển thị message gì, redirect ngay tại mốc 60 phút hay chỉ khi User thao tác tiếp? Dữ liệu form đang nhập dở có bị mất không?</td><td><code>UC-11, FR-34</code></td></tr>
+<tr><td class="id">Q-02</td><td><span class="prio" style="color:var(--bad)">Cao</span></td><td>Conflict</td><td>Sau timeout 60 phút Remember vẫn còn. Như vậy User chỉ cần đóng/mở lại browser là được Auto Login (UC-09), vòng qua yêu cầu login lại của UC-11. Đây có phải hành vi mong muốn không?</td><td><code>BR-TIME-05/06, UC-09</code></td></tr>
+<tr><td class="id">Q-03</td><td><span class="prio" style="color:var(--bad)">Cao</span></td><td>Ambiguity</td><td>"Đóng browser" được hiểu thế nào: đóng tab cuối, đóng cửa sổ, hay thoát hẳn browser? Nếu browser bật "khôi phục phiên" (Chrome "Continue where you left off") hoặc là browser mobile chạy nền thì UC-10 (không tick phải login lại) có còn áp dụng không?</td><td><code>UC-10, 5.8.1</code></td></tr>
+<tr><td class="id">Q-04</td><td><span class="prio" style="color:var(--bad)">Cao</span></td><td>Missing</td><td>Concurrent login: phiên nào được giữ (request đến sau, hay request xử lý xong sau)? Bên thua thấy gì: báo lỗi hay login được rồi bị đá ngay?</td><td><code>BR-SESSION-07, AC-19</code></td></tr>
+<tr><td class="id">Q-05</td><td><span class="prio" style="color:var(--warn)">TB</span></td><td>Missing</td><td>Reset password theo FRD Quên MK làm mất Remember. Phiên đang hoạt động có bị vô hiệu không? Change Password (out of scope) thì ảnh hưởng gì tới phiên và Remember?</td><td><code>5.8.4</code></td></tr>
+<tr><td class="id">Q-06</td><td><span class="prio" style="color:var(--warn)">TB</span></td><td>Missing</td><td>Auto Login bị từ chối (hết hạn, bị khóa, bị device khác thay thế) thì hiện màn Login trống hay kèm message? Ví dụ Account bị khóa thì có hiện "Tài khoản hiện tại đã bị khóa." không?</td><td><code>AC-27–29</code></td></tr>
+<tr><td class="id">Q-07</td><td><span class="prio" style="color:var(--warn)">TB</span></td><td>Ambiguity</td><td>"Khi hệ thống phát hiện" Account bị khóa hoặc phiên bị thay thế: phát hiện ở request kế tiếp của User hay được phép push/polling? Nếu cùng lúc vừa bị khóa, vừa bị thay thế, vừa timeout thì ưu tiên message nào?</td><td><code>BR-STATUS-03, 5.6.1</code></td></tr>
+<tr><td class="id">Q-08</td><td><span class="prio" style="color:var(--warn)">TB</span></td><td>Missing</td><td>Rule format Email cụ thể là gì (regex, max length)? Password có max length không? Validate on-blur hay on-submit? Cả hai field cùng trống thì hiện một hay hai message? Email chỉ gồm khoảng trắng xử lý là "trống" hay "sai format"?</td><td><code>FR-07–09, AC-02–04</code></td></tr>
+<tr><td class="id">Q-09</td><td><span class="prio" style="color:var(--warn)">TB</span></td><td>Missing</td><td>Account bị khóa nhưng vẫn còn phiên cũ ở device khác (khóa nhưng chưa bị phát hiện), nếu có người login đúng credential ở device mới thì phiên cũ có bị vô hiệu ngay không?</td><td><code>BR-SESSION-02, UC-03</code></td></tr>
+<tr><td class="id">Q-10</td><td><span class="prio" style="color:var(--warn)">TB</span></td><td>Missing</td><td>"Audit Login và Session" nằm trong In Scope nhưng không có rule nào. Cần log những event gì (success, fail, lock, replace, timeout, auto login) và field nào (IP, device, thời gian, lý do)?</td><td><code>§4.1</code></td></tr>
+<tr><td class="id">Q-11</td><td><span class="prio" style="color:var(--warn)">TB</span></td><td>Ambiguity</td><td>14 ngày tính theo 14×24 giờ hay đến hết ngày thứ 14? Ví dụ 01/08 → 15/08 không nói giờ. Login lại có tick trên cùng device thì hạn có tính lại từ đầu không?</td><td><code>FR-39–41</code></td></tr>
+<tr><td class="id">Q-12</td><td><span class="prio" style="color:var(--warn)">TB</span></td><td>Ambiguity</td><td>Nhiều tab: thao tác ở Tab 1 có reset timer 60 phút cho Tab 2 không (suy luận là có vì dùng chung phiên)? Tab đang mở ở background có gửi request tự động không, và request đó có tính là activity không?</td><td><code>BR-SESSION-06, FR-33</code></td></tr>
+<tr><td class="id">Q-13</td><td><span class="prio" style="color:var(--muted)">Thấp</span></td><td>Missing</td><td>Sau khi login thành công hoặc Auto Login thì vào màn nào? Có quay lại deep link ban đầu không? User đang login mà vào URL Login Page thì xử lý thế nào?</td><td><code>UC-01</code></td></tr>
+<tr><td class="id">Q-14</td><td><span class="prio" style="color:var(--muted)">Thấp</span></td><td>Assumption</td><td>Ngoài Active/Deactive/Blocked còn trạng thái nào khác không (Pending, chưa kích hoạt…)? Nếu có thì xử lý ra sao?</td><td><code>§5.4</code></td></tr>
+<tr><td class="id">Q-15</td><td><span class="prio" style="color:var(--muted)">Thấp</span></td><td>Assumption</td><td>Message lỗi hệ thống đang là "đề xuất". Cần chốt câu chữ, và làm rõ timeout phía client có được coi là lỗi hệ thống không.</td><td><code>5.10</code></td></tr>
+<tr><td class="id">Q-16</td><td><span class="prio" style="color:var(--muted)">Thấp</span></td><td>Editorial</td><td>Cuối trang BookStack còn sót câu "Đây là bản full document đã merge thay đổi…". Nên xóa trước khi chốt bản review.</td><td>—</td></tr>
+</tbody></table></div>
+<p class="note info">Nguồn: BookStack · <code>pd-c-campaign-solution-Whr / c-frd-dang-nhap-tai-khoan-biz-client</code> (page 7168, revision 7, cập nhật 24/09/2026).</p>
+</section>
+</main>
+</div>
+
+<script>
+(function(){
+  var q=document.getElementById('q'), out=document.getElementById('qcount');
+  var rows=[].slice.call(document.querySelectorAll('table.filterable tbody tr'));
+  function run(){
+    var v=(q.value||'').trim().toLowerCase(), n=0;
+    rows.forEach(function(r){var hit=!v||r.textContent.toLowerCase().indexOf(v)>-1; r.hidden=!hit; if(hit)n++;});
+    out.textContent=v?(n+' dòng khớp (lọc cả bảng rule, UC, VR, AC, câu hỏi)'):'';
+  }
+  q.addEventListener('input',run);
+})();
+</script>

@@ -1,0 +1,997 @@
+{
+  "campaign": {
+    "name": "DEMO 2030 - QUÉT BILL TRÚNG QUÀ",
+    "type": "scanit",
+    "slug": "demo-campaign-2030",
+    "status": 1,
+    "verify_otp": 0,
+    "biz_order_name": "DEMO Campaign 2030",
+    "provider": null,
+    "notify_by_otp": "[\"NotifyOtpByNone\"]",
+    "notify_gameplay_by": "[\"NotifyGameplayCreatedByNone\"]",
+    "notify_prize_by": "[\"NotifyPrizeByZns\"]",
+    "hide_landing_page": 1,
+    "domain": "demo.scanit.vn",
+    "keys": "Phone",
+    "is_show_winner": 0,
+    "is_show_result": 1,
+    "notify_bill_fail_by": "[\"NotifyBillFailByNone\"]",
+    "tc_template": null,
+    "notify_bill_success_by": "[\"NotifyBillSuccessByNone\"]"
+  },
+  "landing_page": [
+    {
+      "name": "Landing page - DEMO 2030 - QUÉT BILL TRÚNG QUÀ",
+      "title": "DEMO 2030 - QUÉT BILL TRÚNG QUÀ",
+      "status": 1,
+      "is_confirm": 1,
+      "limit_change_phone": 0,
+      "position": 1,
+      "form": {
+        "name": "Form - Landing page - DEMO 2030 - QUÉT BILL TRÚNG QUÀ",
+        "status": 1,
+        "form_element": [
+          {
+            "name": "visitorId",
+            "type": "visitor_id",
+            "rules": null,
+            "display_name": "ID thiết bị",
+            "required": 0,
+            "order": 1,
+            "status": 1,
+            "is_customer_attribute": 1,
+            "type_position": 0,
+            "customer_attribute": {
+              "name": "visitorId",
+              "display_name": "ID thiết bị",
+              "status": 1
+            }
+          },
+          {
+            "name": "source",
+            "type": "hidden",
+            "rules": null,
+            "display_name": "Nguồn",
+            "required": 0,
+            "order": 1,
+            "status": 1,
+            "is_customer_attribute": 1,
+            "type_position": 0,
+            "customer_attribute": {
+              "name": "source",
+              "display_name": "Nguồn",
+              "status": 1
+            }
+          },
+          {
+            "name": "name",
+            "type": "text",
+            "rules": null,
+            "display_name": "Tên",
+            "required": 0,
+            "order": 2,
+            "status": 1,
+            "is_customer_attribute": 1,
+            "type_position": 0,
+            "customer_attribute": {
+              "name": "name",
+              "display_name": "Tên",
+              "status": 1
+            }
+          },
+          {
+            "name": "phone",
+            "type": "text",
+            "rules": "CheckPhone|not_exists_blacklist:demo-campaign-2030",
+            "display_name": "Số điện thoại",
+            "required": 1,
+            "order": 3,
+            "status": 1,
+            "is_customer_attribute": 1,
+            "type_position": 0,
+            "customer_attribute": {
+              "name": "phone",
+              "display_name": "Số điện thoại",
+              "status": 1
+            }
+          },
+          {
+            "name": "agreement",
+            "type": "lite_tnc",
+            "rules": null,
+            "display_name": "agreement",
+            "required": 0,
+            "order": 4,
+            "status": 1,
+            "is_customer_attribute": 0,
+            "type_position": 0
+          },
+          {
+            "name": "submit",
+            "type": "submit",
+            "rules": null,
+            "display_name": "Tiếp tục",
+            "required": 0,
+            "order": 5,
+            "status": 1,
+            "is_customer_attribute": 0,
+            "type_position": 0
+          }
+        ]
+      },
+      "game": [
+        {
+          "name": "DEMO 2030 - QUÉT BILL TRÚNG QUÀ - PRIMARY",
+          "type": "award_prize_multi",
+          "position": 1,
+          "status": 1,
+          "list_result_template": "code-n-confirm-delivery",
+          "scanit_type": "choose_all_on_top",
+          "max_combo": 10,
+          "distributor_prize_type": null,
+          "is_primary": 1,
+          "result_template": null,
+          "is_pupup_remaining": 0,
+          "is_pupup_winner": 0,
+          "game_rule": [
+            {
+              "rule_type": "limit_by_total_gameplay",
+              "value": null,
+              "op": "=",
+              "status": 1,
+              "order": 1,
+              "start_date": null,
+              "end_date": null
+            }
+          ],
+          "prize": [
+            {
+              "name": "Lượt chơi may mắn",
+              "quantity": 10000000,
+              "used": 120,
+              "remaining": 9999880,
+              "rate": 0,
+              "position": 1,
+              "status": 1,
+              "msg_sms": null,
+              "type": "increment_gameplay",
+              "default": 0,
+              "zns_msg_content": null,
+              "use_otp": 0,
+              "otp_type": null,
+              "sms_message_for_all": null,
+              "notify_all": 0,
+              "scratch_default": null,
+              "notify_receiver_by": null,
+              "has_delivery_info": 0,
+              "is_show_bar_code": 0,
+              "method_receiver_gift": 0,
+              "order": null,
+              "description": null,
+              "refid_prefix": null,
+              "metadata": {
+                "prefix": "CHUOI_A"
+              }
+            },
+            {
+              "name": "Lượt chơi may mắn",
+              "quantity": 10000000,
+              "used": 121,
+              "remaining": 9999879,
+              "rate": 0,
+              "position": 1,
+              "status": 1,
+              "msg_sms": null,
+              "type": "increment_gameplay",
+              "default": 0,
+              "zns_msg_content": null,
+              "use_otp": 0,
+              "otp_type": null,
+              "sms_message_for_all": null,
+              "notify_all": 0,
+              "scratch_default": null,
+              "notify_receiver_by": null,
+              "has_delivery_info": 0,
+              "is_show_bar_code": 0,
+              "method_receiver_gift": 0,
+              "order": null,
+              "description": null,
+              "refid_prefix": null,
+              "metadata": {
+                "prefix": "CHUOI_B"
+              }
+            }
+          ],
+          "award_mechanism": [
+            {
+              "name": "Scheme",
+              "status": 1,
+              "order": 13,
+              "rate_type": "by_scheme",
+              "mechanism_modifier": [
+                {
+                  "type": "by_default",
+                  "op": "=",
+                  "value": "1",
+                  "status": 1,
+                  "from_date": null,
+                  "end_date": null
+                }
+              ]
+            }
+          ],
+          "scheme": [
+            {
+              "name": "[CHUỖI A] Hóa đơn 199k các sản phẩm DEMO (01/08 - 31/08)",
+              "value": "199000",
+              "prize_type": "by_one",
+              "type": "by_total_price",
+              "status": 0,
+              "prize_value": 1,
+              "prize_amount": 0,
+              "is_ontop": 0,
+              "position": 9,
+              "is_discount": 0,
+              "data_type": "type_and",
+              "limit": 5,
+              "campaign_prize": {
+                "id": 2079,
+                "name": "Lượt chơi may mắn"
+              },
+              "metadata": {
+                "re_browsing": 1,
+                "limit_prize_per_device": "5",
+                "limit_prize_per_customer": "5"
+              },
+              "scheme_detail": [
+                {
+                  "type": "bill_attribute",
+                  "value": "{\"bill_attribute_id\":\"706\",\"bill_attribute_value\":\"11\"}",
+                  "position": 1,
+                  "start_date": null,
+                  "end_date": null
+                },
+                {
+                  "type": "run_time_scheme",
+                  "value": null,
+                  "position": 2,
+                  "start_date": "2030-08-20 06:00:00",
+                  "end_date": "2030-09-08 22:00:00"
+                }
+              ],
+              "scheme_information": {
+                "name": null,
+                "is_show_banner": 1
+              }
+            },
+            {
+              "name": "[CHUỖI B] Hóa đơn 299k các sản phẩm DEMO (01/08 - 31/08)",
+              "value": "299000",
+              "prize_type": "by_one",
+              "type": "by_total_price",
+              "status": 0,
+              "prize_value": 1,
+              "prize_amount": 0,
+              "is_ontop": 0,
+              "position": 15,
+              "is_discount": 0,
+              "data_type": "type_and",
+              "limit": 5,
+              "campaign_prize": {
+                "id": 2090,
+                "name": "Lượt chơi may mắn"
+              },
+              "metadata": {
+                "re_browsing": 1,
+                "limit_prize_per_device": "5",
+                "limit_prize_per_customer": "5"
+              },
+              "scheme_detail": [
+                {
+                  "type": "bill_attribute",
+                  "value": "{\"bill_attribute_id\":\"706\",\"bill_attribute_value\":\"34\"}",
+                  "position": 1,
+                  "start_date": null,
+                  "end_date": null
+                },
+                {
+                  "type": "run_time_scheme",
+                  "value": null,
+                  "position": 2,
+                  "start_date": "2030-08-20 06:00:00",
+                  "end_date": "2030-09-09 22:00:00"
+                }
+              ],
+              "scheme_information": {
+                "name": null,
+                "is_show_banner": 1
+              }
+            }
+          ]
+        },
+        {
+          "name": "Game - Lượt chơi may mắn - CHUỖI B",
+          "type": "lucky_draw_liteview",
+          "position": 1,
+          "status": 1,
+          "list_result_template": "0",
+          "scanit_type": null,
+          "max_combo": 0,
+          "distributor_prize_type": null,
+          "is_primary": 0,
+          "result_template": null,
+          "is_pupup_remaining": 0,
+          "is_pupup_winner": 0,
+          "game_rule": [
+            {
+              "rule_type": "limit_by_total_gameplay_and_interval",
+              "value": "0",
+              "op": "=",
+              "status": 1,
+              "order": 1,
+              "start_date": null,
+              "end_date": null
+            },
+            {
+              "rule_type": "limit_by_time",
+              "value": null,
+              "op": "=",
+              "status": 1,
+              "order": 2,
+              "start_date": "2030-08-01 06:00:00",
+              "end_date": "2030-08-31 22:00:00"
+            }
+          ],
+          "prize": [
+            {
+              "name": "01 Xe máy DEMO",
+              "quantity": 5,
+              "used": 0,
+              "remaining": 5,
+              "rate": 0,
+              "position": 6,
+              "status": 1,
+              "msg_sms": null,
+              "type": "gift",
+              "default": 0,
+              "zns_msg_content": "{\"template_id\":\"560482\",\"template_data\":{\"campaign_name\":\"\",\"invoice_id\":\"invoice_id\",\"phone_number\":\"customer_phone\",\"gift_name\":\"gift_name\",\"customer_name\":\"customer_name\",\"invoice_date\":\"invoice_date:Y-m-d H:i:s\"},\"zns_failover\":\"Chuc mung QK trung duoc {gift_name} tu CT cua DEMO BRAND VN. BTC se lien he trao thuong trong thời gian som nhat. LH: 1800 0000 00\"}",
+              "use_otp": 0,
+              "otp_type": null,
+              "sms_message_for_all": null,
+              "notify_all": null,
+              "scratch_default": 0,
+              "notify_receiver_by": null,
+              "has_delivery_info": 1,
+              "is_show_bar_code": 0,
+              "method_receiver_gift": 0,
+              "order": 0,
+              "description": null,
+              "refid_prefix": null,
+              "metadata": {
+                "prefix": "CHUOI_B"
+              },
+              "promotion_rule": [
+                {
+                  "rule_type": "limit_by_specific_time",
+                  "value": "09:00:00-21:00:00",
+                  "status": 1,
+                  "from_date": null,
+                  "end_date": null,
+                  "is_check_takepic": 0,
+                  "message": null
+                }
+              ]
+            },
+            {
+              "name": "01 E-Voucher 50k",
+              "quantity": 500,
+              "used": 0,
+              "remaining": 500,
+              "rate": 0,
+              "position": 1,
+              "status": 1,
+              "msg_sms": null,
+              "type": "gift",
+              "default": 0,
+              "zns_msg_content": "{\"template_id\":\"560482\",\"template_data\":{\"campaign_name\":\"\",\"invoice_id\":\"invoice_id\",\"phone_number\":\"customer_phone\",\"gift_name\":\"gift_name\",\"customer_name\":\"customer_name\",\"invoice_date\":\"invoice_date:Y-m-d H:i:s\"},\"zns_failover\":\"Chuc mung QK trung duoc {gift_name} tu CT cua DEMO BRAND VN. BTC se lien he trao thuong trong thời gian som nhat. LH: 1800 0000 00\"}",
+              "use_otp": 0,
+              "otp_type": null,
+              "sms_message_for_all": null,
+              "notify_all": null,
+              "scratch_default": 0,
+              "notify_receiver_by": null,
+              "has_delivery_info": 1,
+              "is_show_bar_code": 0,
+              "method_receiver_gift": 0,
+              "order": 0,
+              "description": null,
+              "refid_prefix": null,
+              "metadata": {
+                "prefix": "CHUOI_B"
+              },
+              "promotion_rule": [
+                {
+                  "rule_type": "limit_prize_list_of_game_by_customer_attribute",
+                  "value": "2091,2097,2102,2108,2109,2115,2116,2132,2150,2155,2126,2144,2157,2167:1",
+                  "status": 1,
+                  "from_date": null,
+                  "end_date": null,
+                  "is_check_takepic": 0,
+                  "message": null
+                }
+              ]
+            },
+            {
+              "name": "May mắn lần sau",
+              "quantity": 0,
+              "used": 0,
+              "remaining": 0,
+              "rate": 0,
+              "position": 3,
+              "status": 1,
+              "msg_sms": null,
+              "type": "voucher_merchant",
+              "default": 0,
+              "zns_msg_content": "{\"template_id\":\"616632\",\"template_data\":{\"campaign_name\":\"\",\"event_location\":\"\",\"event_date\":\"\",\"invoice_id\":\"invoice_id\",\"phone_number\":\"customer_phone\",\"gift_name\":\"gift_name\",\"customer_name\":\"customer_name\",\"invoice_date\":\"invoice_date:Y-m-d H:i:s\"},\"zns_failover\":\"Cam on QK da tham gia CT cua DEMO BRAND VN. QK nhan duoc 1 Ve tham du The World of DEMO BRAND vui long truy cap qua cua toi de xem QR tham du su kien LH:1800 0000 00\"}",
+              "use_otp": 0,
+              "otp_type": 1,
+              "sms_message_for_all": null,
+              "notify_all": null,
+              "scratch_default": 0,
+              "notify_receiver_by": null,
+              "has_delivery_info": 0,
+              "is_show_bar_code": 0,
+              "method_receiver_gift": 0,
+              "order": 0,
+              "description": null,
+              "refid_prefix": "CHUỖI A",
+              "metadata": {
+                "prefix": "CHUOI_B"
+              },
+              "product": [
+                {
+                  "name": "01 Vé Fanzone tham gia sự kiện The World of DEMO BRAND ",
+                  "brand_name": null,
+                  "status": 1,
+                  "amount": 0
+                }
+              ],
+              "promotion_rule": [
+                {
+                  "rule_type": "limit_prize_list_of_game_by_customer_attribute",
+                  "value": "2162,2148,2129,2124,2110,2107,2101,2096:5",
+                  "status": 1,
+                  "from_date": null,
+                  "end_date": null,
+                  "is_check_takepic": 0,
+                  "message": null
+                }
+              ]
+            }
+          ],
+          "award_mechanism": [
+            {
+              "name": "Tỉ lệ trúng thưởng mặc định - CHUỖI A",
+              "status": 1,
+              "order": 15,
+              "rate_type": "by_distributor_batches",
+              "mechanism_prize_rate": [
+                {
+                  "rate": 0.1,
+                  "status": 1,
+                  "range_from": null
+                },
+                {
+                  "rate": 20,
+                  "status": 1,
+                  "range_from": null
+                },
+                {
+                  "rate": 79.9,
+                  "status": 1,
+                  "range_from": null
+                }
+              ],
+              "mechanism_modifier": [
+                {
+                  "type": "by_default",
+                  "op": "=",
+                  "value": "1",
+                  "status": 1,
+                  "from_date": null,
+                  "end_date": null
+                }
+              ]
+            },
+            {
+              "name": "HAPPYHOUR-CHUỖI A",
+              "status": 1,
+              "order": 3,
+              "rate_type": "by_distributor_batches",
+              "mechanism_prize_rate": [
+                {
+                  "rate": 0.1,
+                  "status": 1,
+                  "range_from": null
+                },
+                {
+                  "rate": 20,
+                  "status": 1,
+                  "range_from": null
+                },
+                {
+                  "rate": 79.9,
+                  "status": 1,
+                  "range_from": null
+                }
+              ],
+              "mechanism_modifier": [
+                {
+                  "type": "by_date_time_bill",
+                  "op": "=",
+                  "value": "{\r\n    \"date\": [\r\n        \"28/08/2030 - 30/08/2030\",\r\n        \"01/09/2030 - 02/09/2030\",\r\n        \"04/09/2030 - 06/09/2030\"\r\n    ],\r\n    \"time\": [\r\n        \"10:00:00 - 13:00:00\",\r\n        \"18:30:00 - 20:00:00\"\r\n    ]\r\n}",
+                  "status": 1,
+                  "from_date": null,
+                  "end_date": null
+                }
+              ]
+            }
+          ],
+          "game_info": {
+            "name": "Game - Lượt chơi may mắn - CHUỖI A",
+            "status": 0,
+            "end_time_deliveried_at": null
+          }
+        }
+      ]
+    }
+  ],
+  "campaign_setting": [
+    {
+      "key": "otp_expired",
+      "display_name": null,
+      "value": "5",
+      "status": 1
+    },
+    {
+      "key": "sms_otp_message",
+      "display_name": null,
+      "value": "{otp} la ma xac thuc OTP GOTIT.VN cua ban. Ma nay se het hieu luc sau 5phut",
+      "status": 1
+    },
+    {
+      "key": "voucher_expired",
+      "display_name": null,
+      "value": "2030-12-31",
+      "status": 1
+    },
+    {
+      "key": "cookie_otp_expired",
+      "display_name": null,
+      "value": "144000",
+      "status": 1
+    },
+    {
+      "key": "is_use_ccs",
+      "display_name": null,
+      "value": "0",
+      "status": 1
+    },
+    {
+      "key": "company_id",
+      "display_name": null,
+      "value": "100",
+      "status": 1
+    },
+    {
+      "key": "account_id",
+      "display_name": null,
+      "value": "1000",
+      "status": 1
+    },
+    {
+      "key": "provider_sms",
+      "display_name": null,
+      "value": "Gotit_GapIt",
+      "status": 1
+    },
+    {
+      "key": "provider_zns",
+      "display_name": null,
+      "value": "Gotit_eKoin",
+      "status": 1
+    },
+    {
+      "key": "provider_otp_sms",
+      "display_name": null,
+      "value": null,
+      "status": 1
+    },
+    {
+      "key": "extra_params",
+      "display_name": null,
+      "value": null,
+      "status": 1
+    },
+    {
+      "key": "fix_date",
+      "display_name": null,
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "bill_success_notify_message",
+      "display_name": null,
+      "value": null,
+      "status": 1
+    },
+    {
+      "key": "scanit_bill_fail_notity_message",
+      "display_name": null,
+      "value": null,
+      "status": 1
+    },
+    {
+      "key": "zns_otp",
+      "display_name": null,
+      "value": null,
+      "status": 1
+    },
+    {
+      "key": "zns_bill_success_notity",
+      "display_name": null,
+      "value": null,
+      "status": 1
+    },
+    {
+      "key": "zns_bill_fail_notity",
+      "display_name": null,
+      "value": null,
+      "status": 1
+    },
+    {
+      "key": "sms_topup_fail_link",
+      "display_name": null,
+      "value": null,
+      "status": 1
+    },
+    {
+      "key": "is_intro",
+      "display_name": "Is intro",
+      "value": "0",
+      "status": 1
+    },
+    {
+      "key": "scanit_background_home",
+      "display_name": "Hình nền trang chủ",
+      "value": "web/images/demo-campaign-2030/sample.png",
+      "status": 1
+    },
+    {
+      "key": "hotline",
+      "display_name": "Hotline",
+      "value": "1800 0000 00",
+      "status": 1
+    },
+    {
+      "key": "allow_choose_file_from_library",
+      "display_name": "Hiển thị chức năng upload tại homepage",
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "multi_snap",
+      "display_name": "Số lượng hình bill được chụp (Mặc định là 1)",
+      "value": "3",
+      "status": 1
+    },
+    {
+      "key": "limit_size_file_choose",
+      "display_name": "Giới hạn size (MB) file được upload lên server default: 10",
+      "value": "10",
+      "status": 1
+    },
+    {
+      "key": "min_file_choose",
+      "display_name": "min_file_choose",
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "limit_type_file_choose",
+      "display_name": "Định dạng file được upload lên server, ex: jpeg,png,pdf",
+      "value": "jpeg,png,pdf,heif,jpg",
+      "status": 1
+    },
+    {
+      "key": "limit_file_choose",
+      "display_name": "Giới hạn số lượng file được upload lên server, default: 1",
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "content_guide_choose_file",
+      "display_name": "Nội dung hướng dẫn chọn file chuỗi json",
+      "value": "{\"guides\":[{\"title\":\"Upload hoá đơn CHUỖI A\",\"content\":\"Hướng dẫn mẫu\"}]}",
+      "status": 1
+    },
+    {
+      "key": "icon_confirm_delivery_info",
+      "display_name": "Icon của modal xác nhận thông tin giao hàng",
+      "value": "web/images/demo-campaign-2030/sample.png",
+      "status": 1
+    },
+    {
+      "key": "version_takepic_js",
+      "display_name": "version_takepic_js",
+      "value": "20",
+      "status": 1
+    },
+    {
+      "key": "is_hard_bill",
+      "display_name": "Chế độ dùng bill demo",
+      "value": "1",
+      "status": 0
+    },
+    {
+      "key": "is_upload_via_ai",
+      "display_name": "Hóa đơn upload qua AI (0|1) (mặc định là 0)",
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "support_bill_filter_scheme_by_brand",
+      "display_name": "Hỗ trợ filter scheme theo brand",
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "cp005_supermarket_ordernumber_date",
+      "display_name": "Cấu hình check trùng hóa đơn",
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "allow_zalo",
+      "display_name": "Cho phép upload hóa đơn từ webview Zalo",
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "webhook_is_active",
+      "display_name": "Bật tắt event webhook",
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "snap_image_indentify",
+      "display_name": "0|1 Chụp hình căn cước công dân khi nhập thông tin giao hàng",
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "integrate_accessing_type",
+      "display_name": "Loại accessing tích hợp tại module integrate: default, demo_sp, campaign_has_code",
+      "value": "demo_device",
+      "status": 1
+    },
+    {
+      "key": "campaign_client_customize_type",
+      "display_name": "Loại customize ở source campaign client",
+      "value": "Scanit",
+      "status": 1
+    },
+    {
+      "key": "confirm_award_prize_active",
+      "display_name": "Bật/tắt chức năng xác nhận duyệt giải lớn",
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "confirm_award_prize_max_waiting_time_in_seconds",
+      "display_name": "Thời gian chờ tối đa để xác nhận duyệt giải lớn (mặc định là 90 giây)",
+      "value": "60",
+      "status": 1
+    },
+    {
+      "key": "customize",
+      "display_name": "Config chung cho các customize campaign",
+      "value": "{\r\n  \"is_notify_confirm_award_high_prize\": 1,\r\n  \"allow_edit_name_supermarket\": 1,\r\n  \"allow_upload_identify\": 1,\r\n  \"is_show_popup_bill_info_access\": 1,\r\n  \"enrich\": {\r\n    \"CHUỖI A\": true\r\n  },\r\n  \"identity-qr-scanner-version\": \"v2\"\r\n}",
+      "status": 1
+    },
+    {
+      "key": "show_game_invalid_rule",
+      "display_name": "show_game_invalid_rule",
+      "value": "0",
+      "status": 1
+    },
+    {
+      "key": "show_all_remaining_play_times_type",
+      "display_name": "Loại hiển thị số lượt chơi còn lại (1: hiển thị tất cả dang đơn, 2: hiển thị dang mãng và sum số lượt chơi, 3: hiển thị dang mãng và mỗi code 1 mãng)",
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "is_show_none_prize",
+      "display_name": "(0|1): Hiển thị quà May mắn lần sau cho màn hình danh sách quà của tôi. Default 1: hiển thị, 0: ẩn đi",
+      "value": "3",
+      "status": 1
+    },
+    {
+      "key": "show_all_remaining_play_times",
+      "display_name": "Hiển thị số lượt chơi game còn lại của campaign có nhiều mã dữ thưởng",
+      "value": "0",
+      "status": 1
+    },
+    {
+      "key": "list_brand_not_auto",
+      "display_name": null,
+      "value": "",
+      "status": 1
+    },
+    {
+      "key": "list_brand_not_auto_by_upload",
+      "display_name": null,
+      "value": "chuoi_a",
+      "status": 1
+    },
+    {
+      "key": "list_brand_not_auto_by_time",
+      "display_name": null,
+      "value": "",
+      "status": 1
+    },
+    {
+      "key": "list_store_not_auto",
+      "display_name": null,
+      "value": "[\"CHUỖI A - CỬA HÀNG 01\"]",
+      "status": 1
+    },
+    {
+      "key": "template_game_result_standard",
+      "display_name": null,
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "game_result_separate_receive_status",
+      "display_name": null,
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "game_result_attributes",
+      "display_name": null,
+      "value": "{\"billNumber\":{\"label\":\"Số hóa đơn\",\"allowNull\":true},\"supermarketName\":{\"label\":\"Tên siêu thị\",\"allowNull\":true},\"status\":{\"label\":\"Trạng thái\",\"allowNull\":true},\"rewardedDate\":{\"label\":\"Ngày dự thưởng\",\"allowNull\":true}}",
+      "status": 1
+    },
+    {
+      "key": "game_result_action_button",
+      "display_name": null,
+      "value": "{\"delivery\":{\"layout\":\"delivery\",\"label\":\"\"},\"game\":{\"layout\":\"game\",\"label\":\"\"},\"voucher\":{\"label\":\"\",\"layouts\":[\"voucher-show-barcode\",\"voucher-open-popup\"]},\"zalopay\":{\"layout\":\"zalopay\",\"label\":\"\"},\"confirm-received\":{\"layout\":\"confirm-received\",\"label\":\"\"}}",
+      "status": 1
+    },
+    {
+      "key": "source_type_default",
+      "display_name": "source_type_default",
+      "value": "zalo",
+      "status": 1
+    },
+    {
+      "key": "zns_param_default_value",
+      "display_name": "Giá trị mặc định khi ZNS template data rỗng",
+      "value": "{\"campaign_name\":\"QUÉT BILL TRÚNG QUÀ DEMO\",\"event_name\":\"DEMO\"}",
+      "status": 1
+    },
+    {
+      "key": "is_filter_attribute_sku_in_bill",
+      "display_name": "Thêm filter attribute sku vào duyệt bill",
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "error_messages",
+      "display_name": "error_messages",
+      "value": "{\"scanit_rule_message_CP008\":\"Hóa đơn chưa đáp ứng điều kiện chương trình\"}",
+      "status": 1
+    },
+    {
+      "key": "is_automation",
+      "display_name": "(0|1): Chạy auto tự động(case nếu AI k có cảnh báo)",
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "customize_params_approve_bill",
+      "display_name": "customize_params_approve_bill",
+      "value": "{\r\n  \"supermarket_brand_id\": {\r\n    \"name\": \"Tên chuỗi siêu thị\",\r\n    \"required\": true\r\n  },\r\n  \"supermarket_id\": {\r\n    \"name\": \"Tên siêu thị\",\r\n    \"required\": true\r\n  },\r\n  \"supermarket_ward\": {\r\n    \"name\": \"Tỉnh thành\",\r\n    \"required\": false\r\n  },\r\n  \"issue_bill_date\": {\r\n    \"name\": \"Ngày xuất hóa đơn\",\r\n    \"required\": true\r\n  },\r\n  \"issue_bill_time\": {\r\n    \"name\": \"Giờ xuất hóa đơn\",\r\n    \"required\": true\r\n  },\r\n  \"order_number\": {\r\n    \"name\": \"Số hóa đơn\",\r\n    \"required\": true\r\n  },\r\n  \"total_price\": {\r\n    \"name\": \"Tổng giá trị hóa đơn\",\r\n    \"required\": true\r\n  }\r\n}",
+      "status": 1
+    },
+    {
+      "key": "game_congratulate_message_limit_promotion",
+      "display_name": "game_congratulate_message_limit_promotion",
+      "value": "{\"1001\":\"Quý khách đã đạt giới hạn nhận quà của chương trình\"}",
+      "status": 1
+    },
+    {
+      "key": "llm_vote_check_precision_enabled",
+      "display_name": "llm_vote_check_precision_enabled",
+      "value": "1",
+      "status": 1
+    },
+    {
+      "key": "llm_vote_check_precision_timeout",
+      "display_name": "llm_vote_check_precision_timeout",
+      "value": "20",
+      "status": 1
+    },
+    {
+      "key": "command_configs",
+      "display_name": "Cấu hình danh sách các schedule command sẽ được chạy.",
+      "value": "[\r\n  {\r\n    \"signature\": \"alert:prize-stock\",\r\n    \"parameters\": [\r\n      \":campaignId\"\r\n    ],\r\n    \"methods\": {\r\n      \"everyThirtyMinutes\": [],\r\n      \"withoutOverlapping\": [\r\n        5\r\n      ]\r\n    }\r\n  }\r\n]",
+      "status": 0
+    },
+    {
+      "key": "campaign_mode_test",
+      "display_name": "Chế độ test cho campaign (0 = chế độ thực, 1 = chế độ test \"với ip whitelist\")",
+      "value": "0",
+      "status": 1
+    },
+    {
+      "key": "mini_app_home_background_img_width_375",
+      "display_name": "Hình nền trang chủ của thiết bị max width 375px",
+      "value": "web/images/demo-campaign-2030/sample.png",
+      "status": 1
+    },
+    {
+      "key": "webhook_ekoin_value",
+      "display_name": "Webhook Ekoin",
+      "value": "REDACTED_SECRET",
+      "status": 1
+    },
+    {
+      "key": "webhook_use_customize",
+      "display_name": "string: Sử dụng flow webhook riêng cho campaign không dùng mặc định, cấu hình cho 2 loại Bill và Gift",
+      "value": "11",
+      "status": 1
+    },
+    {
+      "key": "level_gift_out_info",
+      "display_name": null,
+      "value": "{\"email\":\"demo.user@example.com\",\"phone\":\"0900000000\"}",
+      "status": 1
+    },
+    {
+      "key": "level_gift_out_notification_status",
+      "display_name": null,
+      "value": "{\"1001\":0,\"1002\":0}",
+      "status": 1
+    },
+    {
+      "key": "alert_prize_info",
+      "display_name": null,
+      "value": "{\"list_prize\":[1001,1002],\"list_email\":[\"demo.user@example.com\"]}",
+      "status": 1
+    },
+    {
+      "key": "sku_suggestion_keywords",
+      "display_name": "Keyword gợi ý SKU thiếu whitelist",
+      "value": "[\"SKU DEMO 1\",\"SKU DEMO 2\"]",
+      "status": 1
+    }
+  ],
+  "take_pic_rule_validation": [
+    {
+      "rules": "available_campaign",
+      "value": "06:00 - 22:00",
+      "status": 1,
+      "message": "Thời gian tham gia CT từ 06:00 - 22:00 mỗi ngày"
+    },
+    {
+      "rules": "device_unknown",
+      "value": null,
+      "status": 1,
+      "message": null
+    }
+  ]
+}

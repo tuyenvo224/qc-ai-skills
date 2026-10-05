@@ -1,0 +1,215 @@
+<title>{{FEAT-xxx Tên ngắn QA DB Map}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: TOC trái (desktop) + một cột đọc. Mỗi flow là một khối: bảng bước 5 cột → nhánh lỗi → SQL gợi ý. Op-chip: + thêm dòng, ~ sửa, đọc. */
+:root{
+  --bg:#F4F6F9; --surface:#FFFFFF; --sunk:#ECF0F5; --ink:#152033; --muted:#566377; --line:#D5DCE6;
+  --accent:#2A5CA8; --accent-soft:#E0E9F7;
+  --ok:#2F7A4B; --ok-soft:#E1F1E6; --warn:#9A6207; --warn-soft:#FBEFD6; --bad:#B42318; --bad-soft:#FBE4E1;
+  --new:#6B3FA0; --new-soft:#EEE6F8; --code-bg:#1E2533; --code-ink:#E3E9F2;
+  --sans:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0E1420; --surface:#151D2B; --sunk:#1B2536; --ink:#E3E9F2; --muted:#98A6BA; --line:#2A3649;
+    --accent:#8DB0EA; --accent-soft:#1B2A44;
+    --ok:#6CC58D; --ok-soft:#173226; --warn:#E3B04E; --warn-soft:#3A2C12; --bad:#F2877B; --bad-soft:#3D1D1A;
+    --new:#C1A0EC; --new-soft:#2B2140; --code-bg:#0A0F18; --code-ink:#D6DEEA;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0E1420; --surface:#151D2B; --sunk:#1B2536; --ink:#E3E9F2; --muted:#98A6BA; --line:#2A3649;
+  --accent:#8DB0EA; --accent-soft:#1B2A44;
+  --ok:#6CC58D; --ok-soft:#173226; --warn:#E3B04E; --warn-soft:#3A2C12; --bad:#F2877B; --bad-soft:#3D1D1A;
+  --new:#C1A0EC; --new-soft:#2B2140; --code-bg:#0A0F18; --code-ink:#D6DEEA;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:200px minmax(0,1fr);gap:36px}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)} nav.toc{display:none}}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;max-height:100vh;overflow:auto;padding-block:28px}
+nav.toc p{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+nav.toc a{display:block;color:var(--muted);text-decoration:none;font-size:13px;padding:3px 0 3px 10px;border-left:2px solid var(--line)}
+nav.toc a.sub{padding-left:22px;font-size:12.5px}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent);border-left-color:var(--accent);outline:none}
+main{min-width:0;padding-block:28px}
+header.doc{display:grid;gap:12px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-size:28px;line-height:1.25;margin:0;text-wrap:balance;font-weight:700}
+h2{font-size:21px;margin:42px 0 12px;text-wrap:balance;scroll-margin-top:16px;display:flex;gap:10px;align-items:baseline}
+h2 .n{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:500}
+h3{font-size:17px;margin:0 0 4px;scroll-margin-top:16px}
+h4{font-size:14px;margin:16px 0 6px;color:var(--muted);font-weight:600;letter-spacing:.02em}
+p{margin:0 0 10px;max-width:76ch}
+ul{margin:0 0 10px;padding-left:22px;max-width:80ch} li{margin:3px 0}
+.lead{color:var(--muted);max-width:76ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:12px;padding:3px 10px;border-radius:999px;background:var(--sunk);border:1px solid var(--line);white-space:nowrap}
+code{font-family:var(--mono);font-size:.86em;background:var(--sunk);padding:1px 5px;border-radius:4px}
+.tbl{overflow-x:auto;margin:8px 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:8px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--sunk);font-weight:600;font-size:12.5px;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--mono);color:var(--muted);width:32px}
+td.db{min-width:260px}
+.pill{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:999px;white-space:nowrap}
+.p-new{background:var(--new-soft);color:var(--new)} .p-change{background:var(--warn-soft);color:var(--warn)} .p-read{background:var(--ok-soft);color:var(--ok)}
+.p-bad{background:var(--bad-soft);color:var(--bad)} .p-info{background:var(--accent-soft);color:var(--accent)}
+.op{display:inline-block;min-width:20px;text-align:center;font-family:var(--mono);font-size:11px;font-weight:700;padding:0 5px;border-radius:4px;margin:1px 3px 1px 0}
+.op-i{background:var(--new-soft);color:var(--new)} .op-u{background:var(--warn-soft);color:var(--warn)} .op-r{background:var(--sunk);color:var(--muted);border:1px solid var(--line);font-weight:500}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:grid;gap:2px}
+.stat .v{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.stat .k{font-size:12.5px;color:var(--muted)}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:10px 14px;border-radius:0 6px 6px 0;margin:12px 0;max-width:86ch;font-size:14px}
+.note.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+.diagram{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;overflow-x:auto;margin:10px 0 12px}
+pre.mermaid{margin:0;background:transparent;font-family:var(--sans)}
+section.flow{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 18px 8px;margin:0 0 18px}
+section.flow > p.when{color:var(--muted);font-size:14px}
+section.flow .tbl{background:var(--bg)}
+pre.sql{background:var(--code-bg);color:var(--code-ink);font-family:var(--mono);font-size:12.5px;line-height:1.55;padding:12px 14px;border-radius:8px;overflow-x:auto;margin:6px 0 14px;white-space:pre}
+.timeline{font-family:var(--mono);font-size:12.5px;background:var(--sunk);border-radius:8px;padding:10px 14px;overflow-x:auto;white-space:pre;line-height:1.7;margin:6px 0 14px}
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+.jump a{font-size:13px;text-decoration:none;color:var(--accent);background:var(--accent-soft);padding:3px 10px;border-radius:999px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.cards{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{font-size:15px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.card h3 code{font-size:14px;font-weight:600}
+.card p{font-size:13.5px;color:var(--muted);margin:2px 0 8px}
+.card table{font-size:13px}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12.5px;margin:8px 0 4px}
+.chain .st{font-family:var(--mono);font-weight:600;background:var(--accent-soft);color:var(--accent);padding:1px 8px;border-radius:4px}
+.chain .ar{color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.q td:first-child{font-family:var(--mono);font-size:12.5px;color:var(--accent);white-space:nowrap}
+footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+a{color:var(--accent)}
+</style>
+
+<!-- ============================================================
+  TEMPLATE tong-hop-ta-db-artifact (bản cho QA)
+  - Thay mọi {{...}}. Mục/khối không có dữ liệu thì xóa. Phần sau </style> ≤ ~380 dòng.
+  - Chỉ dùng token màu. Mermaid: được dùng <br/>; ngoài ra không dùng < > " trong label, không dùng node hình lục giác.
+  - Mẫu hoàn chỉnh: assets/example-login-qa.html
+============================================================ -->
+<div class="wrap">
+<nav class="toc" aria-label="Mục lục">
+  <p>Mục lục</p>
+  <a href="#tomtat">1. Tóm tắt</a>
+  <a href="#bando">2. Bản đồ flow</a>
+  <a href="#flows">3. Từng flow</a>
+  <a class="sub" href="#f1">{{3.1 Tên flow}}</a>
+  <!-- mỗi flow 1 link .sub -->
+  <a href="#tables">4. Tra cứu table</a>
+  <a href="#test">5. Ràng buộc &amp; con số</a>
+  <a href="#hoi">6. Điểm chưa rõ</a>
+</nav>
+
+<main>
+<header class="doc">
+  <span class="eyebrow">Bản cho QA · {{FEAT-xxx}} {{Tên feature}}</span>
+  <h1>{{Tên feature}}: flow nghiệp vụ và dữ liệu lưu vào DB</h1>
+  <p class="lead">Tổng hợp chỉ từ tài liệu TA ở <a href="{{link TA}}">{{đường dẫn rút gọn}}</a> ({{n}} file: {{<code>analysis.md</code>, …}}). Đọc theo thứ tự: bản đồ flow → từng flow → tra cứu table khi cần.</p>
+  <div class="meta">
+    <span class="chip">GitLab {{ref}} <b>{{sha}}</b> · {{dd/mm/yyyy}}</span>
+    <span class="chip">DB: <b>{{MariaDB…}}</b></span>
+  </div>
+</header>
+
+<h2 id="tomtat"><span class="n">01</span>Tóm tắt</h2>
+<p>{{2–3 câu: tính năng làm gì, bắt đầu ở đâu, kết thúc ở đâu.}}</p>
+<div class="stats">
+  <div class="stat"><span class="v">{{n}}</span><span class="k">flow</span></div>
+  <div class="stat"><span class="v">{{n}}</span><span class="k">table liên quan</span></div>
+  <div class="stat"><span class="v">{{60 phút}}</span><span class="k">{{con số quan trọng 1}}</span></div>
+  <div class="stat"><span class="v">{{14 ngày}}</span><span class="k">{{con số quan trọng 2}}</span></div>
+</div>
+<div class="tbl"><table>
+<thead><tr><th>Table</th><th>Loại</th><th>Lưu gì (nói đơn giản)</th></tr></thead>
+<tbody>
+<tr><td><code>{{table}}</code></td><td><span class="pill p-new">mới</span></td><td>{{mỗi … = 1 dòng}}</td></tr>
+<!-- nhãn: p-new "mới" · p-change "sửa schema" · p-info "ghi thêm" · p-read "chỉ đọc" (xem checklist) -->
+</tbody></table></div>
+
+<h2 id="bando"><span class="n">02</span>Bản đồ flow</h2>
+<p>{{1 câu: hành trình người dùng}}. Mỗi ô ghi các table bị ghi ở bước đó.</p>
+<div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  A["{{Flow 1}}<br/>ghi: {{table}}"] --> B["{{Flow 2}}<br/>ghi: {{table}}"]
+</pre>
+</div>
+<div class="jump"><a href="#f1">{{3.1 …}}</a></div>
+
+<h2 id="flows"><span class="n">03</span>Từng flow</h2>
+<div class="legend note"><span class="op op-i">+</span> thêm dòng · <span class="op op-u">~</span> sửa dòng · <span class="op op-r">đọc</span> chỉ đọc để kiểm tra</div>
+
+<section class="flow" id="f1">
+  <h3>{{3.1 Tên flow}}</h3>
+  <p class="when">{{Khi nào xảy ra · API-xxx METHOD /path}}</p>
+  <div class="tbl"><table>
+  <thead><tr><th>#</th><th>Người dùng làm gì</th><th>Hệ thống kiểm tra / xử lý</th><th>Thấy gì trên màn hình</th><th>DB thay đổi</th></tr></thead>
+  <tbody>
+  <tr><td class="num">1</td><td>{{…}}</td><td>{{…}}</td><td>{{…}}</td><td class="db"><span class="op op-i">+</span><code>{{table}}</code> {{cột = giá trị}}</td></tr>
+  </tbody></table></div>
+  <h4>Nhánh lỗi / rẽ</h4>
+  <div class="tbl"><table>
+  <thead><tr><th>Tình huống</th><th>Thấy gì</th><th>DB thay đổi</th><th>Ghi chú</th></tr></thead>
+  <tbody><tr><td>{{…}}</td><td>{{message · mã}}</td><td class="db">{{— hoặc op-chip}}</td><td>{{…}}</td></tr></tbody>
+  </table></div>
+  <h4>SQL gợi ý để kiểm tra</h4>
+<pre class="sql">-- Gợi ý, dựng từ tên cột trong TA; kiểm lại schema thật
+SELECT {{cột}} FROM {{table}} WHERE {{cột}} = :{{tham_so}} ORDER BY {{cột thời gian có trong TA}} DESC LIMIT 2;</pre>
+</section>
+
+<h2 id="tables"><span class="n">04</span>Tra cứu table</h2>
+<div class="cards">
+<div class="card">
+  <h3><code>{{table}}</code> <span class="pill p-new">mới</span></h3>
+  <p>{{Vai trò 1 câu}}</p>
+  <div class="tbl"><table>
+  <thead><tr><th>Cột QA cần nhìn</th><th>Ý nghĩa / giá trị</th></tr></thead>
+  <tbody><tr><td><code>{{cột}}</code></td><td>{{…}}</td></tr></tbody>
+  </table></div>
+  <div class="chain"><span class="st">{{a}}</span><span class="ar">→ {{sự kiện}} →</span><span class="st">{{b}}</span></div>
+</div>
+<div class="card"><!-- thẻ rút gọn cho table phụ -->
+  <h3><code>{{table}}</code> <span class="pill p-read">chỉ đọc</span></h3>
+  <p>{{1 đoạn: đọc/ghi ở bước nào, cột nào}}</p>
+</div>
+</div>
+<div class="note warn"><b>Không nằm trong DB nhưng cần biết khi test:</b> {{cookie / localStorage / IndexedDB …}}</div>
+
+<h2 id="test"><span class="n">05</span>Ràng buộc &amp; con số để test</h2>
+<ul>
+  <li><b>{{Ràng buộc DB viết thành câu kiểm được}}</b></li>
+</ul>
+<div class="tbl"><table>
+<thead><tr><th>Con số</th><th>Giá trị</th><th>Lưu / kiểm ở đâu</th></tr></thead>
+<tbody><tr><td>{{…}}</td><td>{{…}}</td><td><code>{{table.cột}}</code></td></tr></tbody>
+</table></div>
+<div class="tbl"><table>
+<thead><tr><th>Tình huống</th><th>Hiển thị (data-msg-code / chữ)</th><th>HTTP · mã</th></tr></thead>
+<tbody><tr><td>{{…}}</td><td>{{…}}</td><td><code>{{401 · 100…}}</code></td></tr></tbody>
+</table></div>
+<h4>Môi trường test</h4><!-- chỉ khi TA có ghi; không thì xóa -->
+<ul><li>{{cấu hình rút ngắn / tài khoản hạt giống / mock / AC chỉ test ở INT}}</li></ul>
+
+<h2 id="hoi"><span class="n">06</span>Điểm chưa rõ cần hỏi TA</h2>
+<div class="tbl"><table class="q">
+<thead><tr><th>#</th><th>Câu hỏi</th><th>Vì sao ảnh hưởng tới test</th><th>Ở đâu trong TA</th></tr></thead>
+<tbody><tr><td>Q-01</td><td>{{…}}</td><td>{{…}}</td><td>{{design.md §x}}</td></tr></tbody>
+</table></div>
+
+<footer>Nguồn: chỉ tài liệu TA · GitLab <code>{{project}}</code> · <code>{{path}}</code> @ {{ref}} <code>{{sha}}</code> ({{dd/mm/yyyy}}, {{n}} file). Không đối chiếu BA/FRD.</footer>
+</main>
+</div>

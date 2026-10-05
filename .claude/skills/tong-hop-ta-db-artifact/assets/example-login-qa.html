@@ -1,0 +1,448 @@
+<title>FEAT-001 Đăng nhập QA DB Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: TOC trái (desktop) + một cột đọc. Mỗi flow là một khối: bảng bước 5 cột → nhánh lỗi → SQL gợi ý. Op-chip: + thêm dòng, ~ sửa, đọc. */
+:root{
+  --bg:#F4F6F9; --surface:#FFFFFF; --sunk:#ECF0F5; --ink:#152033; --muted:#566377; --line:#D5DCE6;
+  --accent:#2A5CA8; --accent-soft:#E0E9F7;
+  --ok:#2F7A4B; --ok-soft:#E1F1E6; --warn:#9A6207; --warn-soft:#FBEFD6; --bad:#B42318; --bad-soft:#FBE4E1;
+  --new:#6B3FA0; --new-soft:#EEE6F8; --code-bg:#1E2533; --code-ink:#E3E9F2;
+  --sans:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0E1420; --surface:#151D2B; --sunk:#1B2536; --ink:#E3E9F2; --muted:#98A6BA; --line:#2A3649;
+    --accent:#8DB0EA; --accent-soft:#1B2A44;
+    --ok:#6CC58D; --ok-soft:#173226; --warn:#E3B04E; --warn-soft:#3A2C12; --bad:#F2877B; --bad-soft:#3D1D1A;
+    --new:#C1A0EC; --new-soft:#2B2140; --code-bg:#0A0F18; --code-ink:#D6DEEA;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0E1420; --surface:#151D2B; --sunk:#1B2536; --ink:#E3E9F2; --muted:#98A6BA; --line:#2A3649;
+  --accent:#8DB0EA; --accent-soft:#1B2A44;
+  --ok:#6CC58D; --ok-soft:#173226; --warn:#E3B04E; --warn-soft:#3A2C12; --bad:#F2877B; --bad-soft:#3D1D1A;
+  --new:#C1A0EC; --new-soft:#2B2140; --code-bg:#0A0F18; --code-ink:#D6DEEA;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:200px minmax(0,1fr);gap:36px}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)} nav.toc{display:none}}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;max-height:100vh;overflow:auto;padding-block:28px}
+nav.toc p{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+nav.toc a{display:block;color:var(--muted);text-decoration:none;font-size:13px;padding:3px 0 3px 10px;border-left:2px solid var(--line)}
+nav.toc a.sub{padding-left:22px;font-size:12.5px}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent);border-left-color:var(--accent);outline:none}
+main{min-width:0;padding-block:28px}
+header.doc{display:grid;gap:12px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-size:28px;line-height:1.25;margin:0;text-wrap:balance;font-weight:700}
+h2{font-size:21px;margin:42px 0 12px;text-wrap:balance;scroll-margin-top:16px;display:flex;gap:10px;align-items:baseline}
+h2 .n{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:500}
+h3{font-size:17px;margin:0 0 4px;scroll-margin-top:16px}
+h4{font-size:14px;margin:16px 0 6px;color:var(--muted);font-weight:600;letter-spacing:.02em}
+p{margin:0 0 10px;max-width:76ch}
+ul{margin:0 0 10px;padding-left:22px;max-width:80ch} li{margin:3px 0}
+.lead{color:var(--muted);max-width:76ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:12px;padding:3px 10px;border-radius:999px;background:var(--sunk);border:1px solid var(--line);white-space:nowrap}
+code{font-family:var(--mono);font-size:.86em;background:var(--sunk);padding:1px 5px;border-radius:4px}
+.tbl{overflow-x:auto;margin:8px 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:8px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--sunk);font-weight:600;font-size:12.5px;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--mono);color:var(--muted);width:32px}
+td.db{min-width:260px}
+.pill{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:999px;white-space:nowrap}
+.p-new{background:var(--new-soft);color:var(--new)} .p-change{background:var(--warn-soft);color:var(--warn)} .p-read{background:var(--ok-soft);color:var(--ok)}
+.p-bad{background:var(--bad-soft);color:var(--bad)} .p-info{background:var(--accent-soft);color:var(--accent)}
+.op{display:inline-block;min-width:20px;text-align:center;font-family:var(--mono);font-size:11px;font-weight:700;padding:0 5px;border-radius:4px;margin:1px 3px 1px 0}
+.op-i{background:var(--new-soft);color:var(--new)} .op-u{background:var(--warn-soft);color:var(--warn)} .op-r{background:var(--sunk);color:var(--muted);border:1px solid var(--line);font-weight:500}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:grid;gap:2px}
+.stat .v{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.stat .k{font-size:12.5px;color:var(--muted)}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:10px 14px;border-radius:0 6px 6px 0;margin:12px 0;max-width:86ch;font-size:14px}
+.note.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+.diagram{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;overflow-x:auto;margin:10px 0 12px}
+pre.mermaid{margin:0;background:transparent;font-family:var(--sans)}
+section.flow{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 18px 8px;margin:0 0 18px}
+section.flow > p.when{color:var(--muted);font-size:14px}
+section.flow .tbl{background:var(--bg)}
+pre.sql{background:var(--code-bg);color:var(--code-ink);font-family:var(--mono);font-size:12.5px;line-height:1.55;padding:12px 14px;border-radius:8px;overflow-x:auto;margin:6px 0 14px;white-space:pre}
+.timeline{font-family:var(--mono);font-size:12.5px;background:var(--sunk);border-radius:8px;padding:10px 14px;overflow-x:auto;white-space:pre;line-height:1.7;margin:6px 0 14px}
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+.jump a{font-size:13px;text-decoration:none;color:var(--accent);background:var(--accent-soft);padding:3px 10px;border-radius:999px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.cards{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{font-size:15px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.card h3 code{font-size:14px;font-weight:600}
+.card p{font-size:13.5px;color:var(--muted);margin:2px 0 8px}
+.card table{font-size:13px}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12.5px;margin:8px 0 4px}
+.chain .st{font-family:var(--mono);font-weight:600;background:var(--accent-soft);color:var(--accent);padding:1px 8px;border-radius:4px}
+.chain .ar{color:var(--muted)}
+.q td:first-child{font-family:var(--mono);font-size:12.5px;color:var(--accent);white-space:nowrap}
+footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+a{color:var(--accent)}
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="Mục lục">
+  <p>Mục lục</p>
+  <a href="#tomtat">1. Tóm tắt</a>
+  <a href="#bando">2. Bản đồ flow</a>
+  <a href="#flows">3. Từng flow</a>
+  <a class="sub" href="#f1">3.1 Đăng nhập bằng Email</a>
+  <a class="sub" href="#f2">3.2 Auto login</a>
+  <a class="sub" href="#f3">3.3 Đang dùng &amp; làm mới token</a>
+  <a class="sub" href="#f4">3.4 Hết phiên do idle</a>
+  <a class="sub" href="#f5">3.5 Bị đăng nhập nơi khác</a>
+  <a class="sub" href="#f6">3.6 Đặt lại mật khẩu</a>
+  <a href="#tables">4. Tra cứu table</a>
+  <a href="#test">5. Ràng buộc &amp; con số</a>
+  <a href="#hoi">6. Điểm chưa rõ</a>
+</nav>
+
+<main>
+<header class="doc">
+  <span class="eyebrow">Bản cho QA · FEAT-001 Đăng nhập</span>
+  <h1>Đăng nhập: flow nghiệp vụ và dữ liệu lưu vào DB</h1>
+  <p class="lead">Tổng hợp chỉ từ tài liệu TA ở <a href="https://gitlab.gotit.vn/dayonevn/biz-portal-docs/-/tree/master/technical-design/products/reward-enterprise/authentication/login?ref_type=heads">technical-design/…/authentication/login</a> (3 file: <code>analysis.md</code>, <code>design.md</code>, <code>ui-contract.md</code>). Đọc theo thứ tự: bản đồ flow → từng flow → tra cứu table khi cần.</p>
+  <div class="meta">
+    <span class="chip">GitLab master <b>627c129c</b> · 28/08/2026</span>
+    <span class="chip">DB: <b>MariaDB</b></span>
+  </div>
+</header>
+
+<h2 id="tomtat"><span class="n">01</span>Tóm tắt</h2>
+<p>Client đăng nhập bằng Email + Password ở màn Login, có thể tick "Ghi nhớ đăng nhập" để lần sau tự vào (tối đa 14 ngày). Mỗi Account chỉ có <b>1 phiên</b> đang chạy; phiên kết thúc khi không chạm chuột/bàn phím 60 phút, khi đăng nhập ở máy khác, khi tài khoản bị khóa hoặc khi mật khẩu được đặt lại. Mọi sự kiện đều ghi một dòng audit.</p>
+<div class="stats">
+  <div class="stat"><span class="v">6</span><span class="k">flow</span></div>
+  <div class="stat"><span class="v">8</span><span class="k">table liên quan</span></div>
+  <div class="stat"><span class="v">60 phút</span><span class="k">không thao tác → hết phiên</span></div>
+  <div class="stat"><span class="v">14 ngày</span><span class="k">ghi nhớ đăng nhập (tuyệt đối)</span></div>
+</div>
+<div class="tbl"><table>
+<thead><tr><th>Table</th><th>Loại</th><th>Lưu gì (nói đơn giản)</th></tr></thead>
+<tbody><tr><td><code>login_sessions</code></td><td><span class="pill p-new">mới</span></td><td>Mỗi lần đăng nhập thành công (bằng mật khẩu hoặc auto login) = 1 dòng phiên</td></tr>
+<tr><td><code>user_tokens</code></td><td><span class="pill p-change">sửa</span></td><td>Token của phiên; mỗi lần làm mới token thêm 1 dòng. Thêm cột <code>session_id</code></td></tr>
+<tr><td><code>remember_logins</code></td><td><span class="pill p-new">mới</span></td><td>Mỗi lần đăng nhập có tick "Ghi nhớ" = 1 dòng, theo cặp Account + máy</td></tr>
+<tr><td><code>auth_audit_events</code></td><td><span class="pill p-new">mới</span></td><td>Mỗi sự kiện đăng nhập / hết phiên = 1 dòng audit</td></tr>
+<tr><td><code>login_attempt_counters</code></td><td><span class="pill p-new">mới</span></td><td>Bộ đếm chống dò mật khẩu, theo IP và theo Email (đã hash)</td></tr>
+<tr><td><code>verification_grants</code></td><td><span class="pill p-new">mới</span></td><td>Vé tạm cho Account <code>pending</code> đi tiếp sang bước OTP của Đăng ký</td></tr>
+<tr><td><code>accounts</code></td><td><span class="pill p-read">chỉ đọc</span></td><td>Email, mật khẩu (hash), <code>status</code>. TA ghi nhãn <i>change</i> nhưng migration <code>status</code> do FEAT-003 làm <i>(theo TA)</i>; FEAT-001 chỉ đọc</td></tr>
+<tr><td><code>users</code></td><td><span class="pill p-read">chỉ đọc</span></td><td>Người dùng sở hữu Account, đọc khi đăng nhập</td></tr>
+</tbody></table></div>
+
+<h2 id="bando"><span class="n">02</span>Bản đồ flow</h2>
+<p>Hành trình: đăng nhập → đang dùng → hết phiên (vì idle, máy khác, khóa, đổi mật khẩu) → mở lại app. Mỗi ô ghi các table bị ghi ở bước đó.</p>
+<div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  A["3.1 Đăng nhập Email<br/>ghi: login_sessions, user_tokens,<br/>remember_logins, auth_audit_events,<br/>login_attempt_counters"] --> B["3.3 Đang dùng<br/>ghi: user_tokens khi làm mới"]
+  C["3.2 Auto login<br/>ghi: login_sessions, user_tokens,<br/>auth_audit_events"] --> B
+  B --> D["3.4 Idle 60 phút<br/>ghi: login_sessions, user_tokens,<br/>remember_logins suppressed"]
+  B --> E["3.5 Đăng nhập máy khác<br/>ghi: login_sessions, remember_logins"]
+  B --> F["3.6 Đặt lại mật khẩu<br/>ghi: login_sessions, remember_logins"]
+  D --> G["Mở lại app<br/>không auto login"]
+  G --> A
+  E --> A
+  F --> A
+  H["Mở lại app có ghi nhớ"] --> C
+</pre>
+</div>
+<div class="jump"><a href="#f1">3.1 Đăng nhập</a><a href="#f2">3.2 Auto login</a><a href="#f3">3.3 Đang dùng</a><a href="#f4">3.4 Idle</a><a href="#f5">3.5 Máy khác</a><a href="#f6">3.6 Đặt lại mật khẩu</a></div>
+
+<h2 id="flows"><span class="n">03</span>Từng flow</h2>
+<div class="legend note"><span class="op op-i">+</span> thêm dòng · <span class="op op-u">~</span> sửa dòng · <span class="op op-r">đọc</span> chỉ đọc để kiểm tra. <code>device_ref</code> = mã máy/trình duyệt do FE sinh, nằm trong cookie <code>rt_device</code>.</div>
+
+<section class="flow" id="f1">
+  <h3>3.1 Đăng nhập bằng Email + Password</h3>
+  <p class="when">Client bấm Đăng nhập ở màn Login · <code>API-001 POST /api/v1/auth/verify</code></p>
+  <div class="tbl"><table>
+  <thead><tr><th>#</th><th>Người dùng làm gì</th><th>Hệ thống kiểm tra / xử lý</th><th>Thấy gì trên màn hình</th><th>DB thay đổi</th></tr></thead>
+  <tbody><tr><td class="num">1</td><td>Nhập Email, Password, tick / không tick "Ghi nhớ"</td><td>FE kiểm bắt buộc + định dạng Email; sai thì không gửi request</td><td>Lỗi dưới trường (nếu có)</td><td class="db">—</td></tr>
+  <tr><td class="num">2</td><td>Bấm Đăng nhập</td><td>Nút khóa lại (<code>data-busy="true"</code>), chỉ 1 request. BE kiểm bộ đếm theo IP và theo Email <b>trước</b> khi đọc Account</td><td>Nút đang xử lý</td><td class="db"><span class="op op-r">đọc</span><code>login_attempt_counters</code> (<code>scope_type</code> = <code>ip</code>, <code>email</code>)</td></tr>
+  <tr><td class="num">3</td><td>—</td><td>Trim + lowercase Email, tìm Account, so mật khẩu bằng bcrypt (Email không tồn tại vẫn so giả để thời gian như nhau)</td><td>—</td><td class="db"><span class="op op-r">đọc</span><code>accounts</code>.<code>username</code>, <code>password_hash</code> · <code>users</code></td></tr>
+  <tr><td class="num">4</td><td>—</td><td>Chỉ khi mật khẩu đúng mới xem <code>accounts.status</code>; phải là <code>active</code></td><td>—</td><td class="db"><span class="op op-r">đọc</span><code>accounts.status</code></td></tr>
+  <tr><td class="num">5</td><td>—</td><td>Kết thúc phiên cũ của Account (nếu có); hủy ghi nhớ ở máy khác</td><td>—</td><td class="db"><span class="op op-u">~</span><code>login_sessions</code> cũ: <code>status = terminated_by_new_login</code>, <code>active_account_id = NULL</code><br><span class="op op-u">~</span><code>remember_logins</code> máy khác: <code>status = invalidated</code>, <code>invalidated_reason = other_device</code></td></tr>
+  <tr><td class="num">6</td><td>—</td><td>Tạo phiên mới + token</td><td>—</td><td class="db"><span class="op op-i">+</span><code>login_sessions</code>: <code>status = active</code>, <code>active_account_id = account_id</code>, <code>origin = credential</code>, <code>device_ref</code><br><span class="op op-i">+</span><code>user_tokens</code>: <code>session_id</code> = id phiên mới</td></tr>
+  <tr><td class="num">7</td><td>—</td><td><b>Có tick:</b> tạo ghi nhớ, set cookie <code>rt_remember</code> + <code>rt_remember_hint</code>. <b>Không tick:</b> hủy ghi nhớ của máy này, xóa cookie</td><td>—</td><td class="db">Tick: <span class="op op-i">+</span><code>remember_logins</code>: <code>status = valid</code>, <code>expires_at = issued_at + 14 ngày</code><br>Không tick: <span class="op op-u">~</span><code>remember_logins</code> cùng máy: <code>invalidated</code>, <code>reason = untick</code></td></tr>
+  <tr><td class="num">8</td><td>—</td><td>Ghi audit</td><td>Chuyển sang trang mặc định (<code>data-screen="home"</code>)</td><td class="db"><span class="op op-i">+</span><code>auth_audit_events</code>: <code>EVT-001 LoginSucceeded</code>, <code>EVT-006 LoginSessionCreated</code>, <code>EVT-007</code> (nếu có phiên cũ ❓), <code>EVT-011</code> (nếu tick)</td></tr>
+  </tbody></table></div>
+  <p><i>Bước 5–8: cùng 1 transaction: lỗi là không lưu gì, phiên cũ còn nguyên.</i></p>
+  <h4>Nhánh lỗi / rẽ</h4>
+  <div class="tbl"><table>
+  <thead><tr><th>Tình huống</th><th>Thấy gì</th><th>DB thay đổi</th><th>Ghi chú</th></tr></thead>
+  <tbody><tr><td>Để trống / sai định dạng Email</td><td><code>AUTH.LOGIN.EMAIL_REQUIRED</code>, <code>EMAIL_FORMAT_INVALID</code>, <code>PASSWORD_REQUIRED</code></td><td class="db">—</td><td>Không phát request</td></tr>
+  <tr><td>Vượt 10 lần / phút theo IP hoặc Email</td><td><code>AUTH.LOGIN.RATE_LIMITED</code> · 429 · <code>100100013</code></td><td class="db"><span class="op op-u">~</span><code>login_attempt_counters.blocked_until</code> · <span class="op op-i">+</span><code>auth_audit_events</code> <code>EVT-005</code>, <code>scope = ip|email</code> ❓</td><td>Không đọc Account. Mã + <code>Retry-After</code> giống nhau dù Email có tồn tại hay không</td></tr>
+  <tr><td>Email không tồn tại hoặc mật khẩu sai</td><td><code>AUTH.LOGIN.INVALID_CREDENTIALS</code> · 401 · <code>100100001</code></td><td class="db"><span class="op op-u">~</span><code>login_attempt_counters.attempt_count</code> +1 · <span class="op op-i">+</span><code>auth_audit_events</code> <code>EVT-002</code>, <code>account_id = NULL</code></td><td>Hai trường hợp phải cùng mã. Account khóa + mật khẩu sai cũng ra mã này</td></tr>
+  <tr><td>Mật khẩu đúng, <code>status</code> = <code>deactive</code> / <code>blocked</code></td><td><code>AUTH.LOGIN.ACCOUNT_LOCKED</code> · 401 · <code>100100011</code></td><td class="db"><span class="op op-i">+</span><code>auth_audit_events</code> <code>EVT-003</code></td><td>Hai status cùng 1 mã</td></tr>
+  <tr><td>Mật khẩu đúng, <code>status = pending</code></td><td><code>AUTH.LOGIN.ACCOUNT_UNVERIFIED</code> · 401 · <code>100100012</code>, chuyển sang màn OTP Đăng ký (<code>SC-07</code>)</td><td class="db"><span class="op op-i">+</span><code>verification_grants</code>: <code>origin = login</code>, <code>expires_at = now + 600 giây</code> · <span class="op op-i">+</span><code>auth_audit_events</code> <code>EVT-004</code></td><td>Không tạo <code>login_sessions</code>. Xem Q-01</td></tr>
+  <tr><td>Lỗi hệ thống / phụ thuộc</td><td><code>AUTH.LOGIN.SYSTEM_ERROR</code> · 503 · <code>100070002</code></td><td class="db">— (rollback) · log <code>EVT-015</code></td><td>Phiên đang có ở máy khác không bị ảnh hưởng</td></tr>
+  </tbody></table></div>
+  <h4>SQL gợi ý để kiểm tra</h4>
+<pre class="sql">-- Gợi ý, dựng từ tên cột trong TA; kiểm lại schema thật
+SELECT id, status, active_account_id, origin, device_ref, issued_at, terminated_at
+  FROM login_sessions WHERE account_id = :account_id ORDER BY id DESC LIMIT 3;
+SELECT id, device_ref, status, issued_at, expires_at, invalidated_reason
+  FROM remember_logins WHERE account_id = :account_id ORDER BY id DESC LIMIT 3;
+SELECT event_code, account_id, session_ref, device_ref, correlation_id, occurred_at
+  FROM auth_audit_events WHERE account_id = :account_id ORDER BY occurred_at DESC LIMIT 10;</pre>
+</section>
+
+<section class="flow" id="f2">
+  <h3>3.2 Auto login bằng "Ghi nhớ đăng nhập"</h3>
+  <p class="when">Mở lại website trên cùng trình duyệt/máy, có cookie gợi ý <code>rt_remember_hint</code> · <code>API-003 POST /api/v1/auth/remember/consume</code></p>
+  <div class="tbl"><table>
+  <thead><tr><th>#</th><th>Người dùng làm gì</th><th>Hệ thống kiểm tra / xử lý</th><th>Thấy gì trên màn hình</th><th>DB thay đổi</th></tr></thead>
+  <tbody><tr><td class="num">1</td><td>Mở website</td><td>FE thấy <code>rt_remember_hint</code> và <b>không</b> có cờ <code>idleTimedOut</code> → gọi API-003 một lần. Không có hint → hiện form ngay</td><td><code>data-state="auto-login-checking"</code>, chưa hiện form</td><td class="db">—</td></tr>
+  <tr><td class="num">2</td><td>—</td><td>Tìm dòng theo <code>selector</code> trong cookie; kiểm verifier, <code>device_ref</code> khớp, <code>status = valid</code>, chưa quá <code>expires_at</code></td><td>—</td><td class="db"><span class="op op-r">đọc</span><code>remember_logins</code></td></tr>
+  <tr><td class="num">3</td><td>—</td><td><code>accounts.status</code> phải <code>active</code></td><td>—</td><td class="db"><span class="op op-r">đọc</span><code>accounts.status</code></td></tr>
+  <tr><td class="num">4</td><td>—</td><td>Kết thúc phiên cũ (nếu có), tạo phiên mới. <b>Không</b> gia hạn ghi nhớ</td><td>—</td><td class="db"><span class="op op-u">~</span><code>login_sessions</code> cũ → <code>terminated_by_new_login</code><br><span class="op op-i">+</span><code>login_sessions</code>: <code>origin = remember</code>, <code>status = active</code> · <span class="op op-i">+</span><code>user_tokens</code><br><code>remember_logins.expires_at</code> <b>không đổi</b></td></tr>
+  <tr><td class="num">5</td><td>—</td><td>Ghi audit</td><td>Vào trang mặc định</td><td class="db"><span class="op op-i">+</span><code>auth_audit_events</code>: <code>EVT-012 RememberLoginUsed</code>, <code>EVT-006</code>, <code>EVT-007</code></td></tr>
+  </tbody></table></div>
+  <p><i>Bước 4–5: cùng 1 transaction.</i></p>
+  <h4>Nhánh lỗi / rẽ</h4>
+  <div class="tbl"><table>
+  <thead><tr><th>Tình huống</th><th>Thấy gì</th><th>DB thay đổi</th><th>Ghi chú</th></tr></thead>
+  <tbody><tr><td>Đã quá 14 ngày</td><td>Form Login, <b>không</b> có message · 401 <code>100100018</code></td><td class="db"><span class="op op-u">~</span><code>remember_logins.status = expired</code> · <span class="op op-i">+</span><code>auth_audit_events</code> <code>EVT-014</code></td><td>Không có job chạy nền: chỉ đổi thành <code>expired</code> khi có người gọi API-003</td></tr>
+  <tr><td><code>suppressed</code> / <code>invalidated</code> / cookie sai / khác máy</td><td>Như trên · 401 <code>100100018</code></td><td class="db">— (có thể <code>EVT-013</code> ❓)</td><td>FE xóa cookie, <code>data-state = ready</code>, không có <code>data-msg-code</code></td></tr>
+  <tr><td>Account <code>deactive</code> / <code>blocked</code> / <code>pending</code></td><td>Form Login · 401 <code>100100011</code> / <code>100100012</code></td><td class="db"><span class="op op-i">+</span><code>auth_audit_events</code> <code>EVT-003</code> / <code>EVT-004</code></td><td>TA không nói có hiện message hay không ❓</td></tr>
+  </tbody></table></div>
+  <h4>SQL gợi ý để kiểm tra</h4>
+<pre class="sql">-- Gợi ý, dựng từ tên cột trong TA; kiểm lại schema thật
+SELECT id, status, expires_at, suppressed_at FROM remember_logins
+ WHERE account_id = :account_id AND device_ref = :device_ref ORDER BY id DESC LIMIT 2;
+SELECT id, origin, status FROM login_sessions WHERE account_id = :account_id ORDER BY id DESC LIMIT 2;</pre>
+</section>
+
+<section class="flow" id="f3">
+  <h3>3.3 Đang dùng: mỗi request và làm mới token</h3>
+  <p class="when">Mọi API nghiệp vụ đi qua guard (<code>API-005</code>) · làm mới token <code>API-002 POST /api/v1/auth/refresh</code> kèm <code>idleSeconds</code></p>
+  <div class="tbl"><table>
+  <thead><tr><th>#</th><th>Người dùng làm gì</th><th>Hệ thống kiểm tra / xử lý</th><th>Thấy gì trên màn hình</th><th>DB thay đổi</th></tr></thead>
+  <tbody><tr><td class="num">1</td><td>Di chuột, gõ phím, cuộn, chạm</td><td>FE ghi mốc thao tác cuối <code>lastGestureAt</code> vào IndexedDB (tối đa 5 giây/lần)</td><td>—</td><td class="db">— (không phải DB)</td></tr>
+  <tr><td class="num">2</td><td>Dùng chức năng nghiệp vụ</td><td>Guard: token hợp lệ → phiên phải <code>active</code> → <code>accounts.status</code> phải <code>active</code></td><td>Dữ liệu bình thường</td><td class="db"><span class="op op-r">đọc</span><code>user_tokens</code>, <code>login_sessions</code>, <code>accounts</code> · thành công <b>không ghi gì</b></td></tr>
+  <tr><td class="num">3</td><td>Có thao tác và token đã hơn 600 giây tuổi</td><td>FE gọi API-002 với <code>idleSeconds</code> = số giây từ thao tác cuối. Hạn mới = <code>now + (3600 − idleSeconds)</code> = đúng thao tác cuối + 60 phút</td><td>Không thấy gì</td><td class="db"><span class="op op-u">~</span><code>user_tokens</code> dòng cũ: <code>consumed_at</code><br><span class="op op-i">+</span><code>user_tokens</code> mới: cùng <code>session_id</code>, <code>refresh_expires_at</code> = như công thức<br><code>login_sessions</code>, <code>remember_logins.expires_at</code> không đổi</td></tr>
+  <tr><td class="num">4</td><td>Nghỉ 40 phút rồi quay lại thao tác</td><td>Access token đã hết hạn nhưng refresh vẫn được (chưa tới mốc 60 phút)</td><td>Vẫn ở trang, không bị đá ra</td><td class="db">Như bước 3</td></tr>
+  <tr><td class="num">5</td><td>Không làm gì, trang tự gọi request nền (health, refetch…)</td><td>Service worker xếp là request nền → <b>không</b> làm mới token, không tính là thao tác</td><td>—</td><td class="db">—</td></tr>
+  </tbody></table></div>
+  <h4>Nhánh lỗi / rẽ</h4>
+  <div class="tbl"><table>
+  <thead><tr><th>Tình huống</th><th>Thấy gì</th><th>DB thay đổi</th><th>Ghi chú</th></tr></thead>
+  <tbody><tr><td>Phiên đã kết thúc (idle / máy khác / đổi mật khẩu / khác)</td><td>Về Login + <code>AUTH.SESSION.ENDED_INACTIVITY</code> / <code>ENDED_OTHER_DEVICE</code> / <code>ENDED_PASSWORD_RESET</code> / <code>ENDED</code> · 401 <code>100100016</code> / <code>015</code> / <code>017</code> / <code>014</code></td><td class="db">—</td><td>Mã theo <code>login_sessions.status</code>. Các tab khác cùng trình duyệt cũng về Login cùng lý do</td></tr>
+  <tr><td>Tài khoản bị khóa giữa phiên</td><td><code>AUTH.LOGIN.ACCOUNT_LOCKED</code> · 401 <code>100100011</code></td><td class="db"><span class="op op-u">~</span><code>login_sessions.status = terminated_by_account_status</code> · <span class="op op-i">+</span><code>auth_audit_events</code> <code>EVT-009</code></td><td>Chỉ phát hiện ở request kế tiếp. Ghi nhớ: xem Q-04</td></tr>
+  <tr><td>API-002 với <code>idleSeconds ≥ 3600</code></td><td>401 <code>100100016</code></td><td class="db">Như flow 3.4 bước 2</td><td>Server đóng phiên ngay</td></tr>
+  </tbody></table></div>
+  <h4>SQL gợi ý để kiểm tra</h4>
+<pre class="sql">-- Gợi ý, dựng từ tên cột trong TA; kiểm lại schema thật
+SELECT session_id, family_id, expires_at, refresh_expires_at, consumed_at, revoked_at
+  FROM user_tokens WHERE session_id = :session_id ORDER BY id DESC LIMIT 5;</pre>
+</section>
+
+<section class="flow" id="f4">
+  <h3>3.4 Hết phiên do không thao tác 60 phút</h3>
+  <p class="when">FE thấy <code>now − lastGestureAt</code> chạm 60 phút · <code>API-007 POST /api/v1/auth/session/end</code> (nhận cả token đã hết hạn)</p>
+  <div class="tbl"><table>
+  <thead><tr><th>#</th><th>Người dùng làm gì</th><th>Hệ thống kiểm tra / xử lý</th><th>Thấy gì trên màn hình</th><th>DB thay đổi</th></tr></thead>
+  <tbody><tr><td class="num">1</td><td>Bỏ máy 60 phút, không chạm chuột/bàn phím</td><td>FE ghi cờ <code>idleTimedOut = true</code> vào IndexedDB <b>trước</b>, rồi gọi API-007</td><td>—</td><td class="db">—</td></tr>
+  <tr><td class="num">2</td><td>—</td><td>BE đóng phiên, thu hồi token, tạm khóa auto login của <b>máy này</b></td><td>—</td><td class="db"><span class="op op-u">~</span><code>login_sessions</code>: <code>status = terminated_by_idle_timeout</code>, <code>active_account_id = NULL</code>, <code>idle_ended_at = now</code>, <code>terminated_at = now</code><br><span class="op op-u">~</span><code>user_tokens</code> cùng <code>session_id</code>: thu hồi (<code>revoked_at</code> ❓)<br><span class="op op-u">~</span><code>remember_logins</code> cùng máy: <code>status = suppressed</code>, <code>suppressed_at = now</code><br><span class="op op-i">+</span><code>auth_audit_events</code> <code>EVT-008 LoginEndedDueToInactivity</code></td></tr>
+  <tr><td class="num">3</td><td>—</td><td>API-007 trả 204</td><td>Về Login + <code>AUTH.SESSION.ENDED_INACTIVITY</code>, không có cảnh báo trước</td><td class="db">—</td></tr>
+  <tr><td class="num">4</td><td>Đóng rồi mở lại trình duyệt</td><td>Cờ <code>idleTimedOut</code> còn → không gọi API-003; nếu có gọi cũng bị từ chối vì <code>suppressed</code></td><td>Form Login, không auto login</td><td class="db">—</td></tr>
+  <tr><td class="num">5</td><td>Đăng nhập lại bằng mật khẩu</td><td>Có tick: dòng cũ bị thay bằng dòng mới. Bỏ tick: dòng cũ bị hủy</td><td>Vào trang mặc định</td><td class="db">Tick: <span class="op op-u">~</span>dòng cũ <code>invalidated</code> + <span class="op op-i">+</span>dòng mới <code>valid</code> (Q-05) · Bỏ tick: <span class="op op-u">~</span><code>invalidated</code>, <code>reason = untick</code></td></tr>
+  </tbody></table></div>
+  <p><i>Bước 2: cùng 1 transaction.</i> <code>suppressed</code> = <i>tạm khóa quyền tự đăng nhập</i>; chỉ đăng nhập lại bằng mật khẩu mới gỡ được.</p>
+  <h4>Nhánh lỗi / rẽ</h4>
+  <div class="tbl"><table>
+  <thead><tr><th>Tình huống</th><th>Thấy gì</th><th>DB thay đổi</th><th>Ghi chú</th></tr></thead>
+  <tbody><tr><td>API-007 bị gọi 2 lần (page + service worker)</td><td>204</td><td class="db">— lần 2 không ghi gì, không có <code>EVT-008</code> thừa</td><td>Idempotent</td></tr>
+  <tr><td>Token không ra được phiên nào</td><td>401 <code>100100005</code></td><td class="db">—</td><td>Token hết hạn <b>không</b> rơi vào đây</td></tr>
+  <tr><td>Đóng trình duyệt (không phải idle), mở lại sau 5 tiếng</td><td>Auto login được</td><td class="db">— (ghi nhớ vẫn <code>valid</code>)</td><td>Đây là khác biệt giữa "idle" và "đóng trình duyệt"</td></tr>
+  <tr><td>Tab bị kill trước khi gọi được API-007</td><td>Phiên vẫn chết đúng mốc do hạn token</td><td class="db"><code>remember_logins</code> <b>vẫn</b> <code>valid</code></td><td>TA chấp nhận: có thể auto login sai 1 lần</td></tr>
+  </tbody></table></div>
+  <div class="timeline">09:00  thao tác cuối (G)
+09:40  thao tác lại → vẫn dùng được (refresh chạy dù access token đã hết hạn) → mốc mới = 10:40
+10:40  không ai chạm từ 09:40 → FE gọi API-007 → login_sessions.status = terminated_by_idle_timeout
+Hạn token = now + (3600 − idleSeconds): refresh khi idleSeconds = 900 → now + 2700 = đúng G + 60'
+(dựng từ công thức TA)</div>
+  <h4>SQL gợi ý để kiểm tra</h4>
+<pre class="sql">-- Gợi ý, dựng từ tên cột trong TA; kiểm lại schema thật
+SELECT id, status, active_account_id, idle_ended_at, terminated_at
+  FROM login_sessions WHERE session_ref = :session_ref;
+SELECT status, suppressed_at FROM remember_logins
+ WHERE account_id = :account_id AND device_ref = :device_ref ORDER BY id DESC LIMIT 1;</pre>
+</section>
+
+<section class="flow" id="f5">
+  <h3>3.5 Bị đăng nhập ở máy khác · hai lần đăng nhập cùng lúc</h3>
+  <p class="when">Account đang có phiên ở máy A, rồi đăng nhập ở máy B (bằng mật khẩu hoặc auto login) · <code>API-001</code> / <code>API-003</code></p>
+  <div class="tbl"><table>
+  <thead><tr><th>#</th><th>Người dùng làm gì</th><th>Hệ thống kiểm tra / xử lý</th><th>Thấy gì trên màn hình</th><th>DB thay đổi</th></tr></thead>
+  <tbody><tr><td class="num">1</td><td>Đăng nhập đúng ở máy B</td><td>Như flow 3.1 bước 5–8</td><td>Máy B vào trang mặc định</td><td class="db"><span class="op op-u">~</span><code>login_sessions</code> của A → <code>terminated_by_new_login</code>, <code>active_account_id = NULL</code><br><span class="op op-u">~</span><code>remember_logins</code> của A → <code>invalidated</code>, <code>reason = other_device</code><br><span class="op op-i">+</span><code>auth_audit_events</code> <code>EVT-007 PreviousLoginInvalidated</code></td></tr>
+  <tr><td class="num">2</td><td>Máy A bấm tiếp</td><td>Guard thấy phiên A đã kết thúc</td><td>Về Login + <code>AUTH.SESSION.ENDED_OTHER_DEVICE</code> · 401 <code>100100015</code></td><td class="db">—</td></tr>
+  <tr><td class="num">3</td><td>Máy A mở lại trình duyệt</td><td>Ghi nhớ của A đã hủy</td><td>Form Login</td><td class="db">—</td></tr>
+  <tr><td class="num">4</td><td>Gửi 2 request đăng nhập cùng lúc cho 1 Account</td><td>Khóa dòng phiên, request sau thu hồi phiên của request trước</td><td>—</td><td class="db">Cuối cùng chỉ <b>1</b> dòng <code>login_sessions</code> có <code>active_account_id</code> khác NULL (unique index chặn)</td></tr>
+  </tbody></table></div>
+  <p><b>Rẽ:</b> máy B đăng nhập <b>sai</b> thì phiên A không đổi (chỉ đăng nhập thành công mới đá phiên cũ). 2 tab cùng trình duyệt = cùng <code>device_ref</code> = cùng phiên, cả hai vẫn dùng được; tab ẩn danh = máy khác.</p>
+  <h4>SQL gợi ý để kiểm tra</h4>
+<pre class="sql">-- Gợi ý, dựng từ tên cột trong TA; kiểm lại schema thật
+SELECT COUNT(*) AS so_phien_active FROM login_sessions
+ WHERE account_id = :account_id AND active_account_id IS NOT NULL;   -- phải = 1</pre>
+</section>
+
+<section class="flow" id="f6">
+  <h3>3.6 Mật khẩu được đặt lại (từ Quên mật khẩu)</h3>
+  <p class="when">FEAT-002 đặt lại mật khẩu thành công và phát event <code>EVT-020 PasswordReset</code> <i>(theo TA)</i>. Chưa test đầu-cuối được: TA của FEAT-002 chưa có.</p>
+  <div class="tbl"><table>
+  <thead><tr><th>#</th><th>Người dùng làm gì</th><th>Hệ thống kiểm tra / xử lý</th><th>Thấy gì trên màn hình</th><th>DB thay đổi</th></tr></thead>
+  <tbody><tr><td class="num">1</td><td>Đặt lại mật khẩu (flow của FEAT-002)</td><td>Handler nhận <code>EVT-020</code>, 1 transaction</td><td>—</td><td class="db"><span class="op op-u">~</span><code>login_sessions</code> đang <code>active</code> → <code>terminated_by_password_reset</code><br><span class="op op-u">~</span><b>mọi</b> <code>remember_logins</code> của Account → <code>invalidated</code>, <code>reason = password_reset</code><br><span class="op op-i">+</span><code>auth_audit_events</code> <code>EVT-010</code>, <code>EVT-013</code></td></tr>
+  <tr><td class="num">2</td><td>Máy cũ bấm tiếp</td><td>Guard thấy phiên đã kết thúc</td><td>Về Login + <code>AUTH.SESSION.ENDED_PASSWORD_RESET</code> · 401 <code>100100017</code></td><td class="db">—</td></tr>
+  </tbody></table></div>
+  <p>Event đến lần 2 cho Account đã bị thu hồi: không làm gì. TA không ghi rõ <code>user_tokens</code> có bị đánh dấu thu hồi ở flow này ❓.</p>
+<pre class="sql">-- Gợi ý, dựng từ tên cột trong TA; kiểm lại schema thật
+SELECT status, invalidated_reason, COUNT(*) FROM remember_logins WHERE account_id = :account_id GROUP BY status, invalidated_reason;</pre>
+</section>
+
+<h2 id="tables"><span class="n">04</span>Tra cứu table</h2>
+<div class="cards">
+<div class="card">
+  <h3><code>login_sessions</code> <span class="pill p-new">mới</span></h3>
+  <p>Một dòng = một phiên đăng nhập. Phiên mới luôn là dòng mới.</p>
+  <div class="tbl"><table>
+  <thead><tr><th>Cột QA cần nhìn</th><th>Ý nghĩa / giá trị</th></tr></thead>
+  <tbody><tr><td><code>account_id</code>, <code>session_ref</code>, <code>device_ref</code></td><td>Tìm dòng. <code>session_ref</code> có trong response và audit</td></tr>
+  <tr><td><code>active_account_id</code></td><td>= <code>account_id</code> khi đang chạy; <code>NULL</code> = <i>phiên đã kết thúc</i></td></tr>
+  <tr><td><code>status</code></td><td>Xem chuỗi bên dưới</td></tr>
+  <tr><td><code>origin</code></td><td><code>credential</code> (mật khẩu) · <code>remember</code> (auto login)</td></tr>
+  <tr><td><code>issued_at</code>, <code>idle_ended_at</code>, <code>terminated_at</code></td><td><code>idle_ended_at</code> chỉ có khi hết do idle</td></tr>
+  </tbody></table></div>
+  <div class="chain"><span class="st">active</span><span class="ar">→ idle 60' / máy khác / khóa / đổi mật khẩu →</span><span class="st">terminated_by_idle_timeout</span><span class="st">terminated_by_new_login</span><span class="st">terminated_by_account_status</span><span class="st">terminated_by_password_reset</span></div>
+  <p>Các <code>terminated_*</code> là điểm cuối, không bao giờ quay về <code>active</code>.</p>
+</div>
+<div class="card">
+  <h3><code>remember_logins</code> <span class="pill p-new">mới</span></h3>
+  <p>Một dòng = một lần tick "Ghi nhớ" trên một máy.</p>
+  <div class="tbl"><table>
+  <thead><tr><th>Cột QA cần nhìn</th><th>Ý nghĩa / giá trị</th></tr></thead>
+  <tbody><tr><td><code>account_id</code>, <code>device_ref</code>, <code>selector</code></td><td>Tìm dòng. <code>selector</code> là nửa đầu cookie <code>rt_remember</code></td></tr>
+  <tr><td><code>status</code></td><td>Xem chuỗi bên dưới</td></tr>
+  <tr><td><code>issued_at</code>, <code>expires_at</code></td><td><code>expires_at = issued_at + 14 ngày</code>, không bao giờ đổi</td></tr>
+  <tr><td><code>suppressed_at</code></td><td>Lúc bị tạm khóa do idle</td></tr>
+  <tr><td><code>invalidated_reason</code></td><td><code>other_device</code> · <code>untick</code> · <code>password_reset</code></td></tr>
+  </tbody></table></div>
+  <div class="chain"><span class="st">valid</span><span class="ar">→ idle →</span><span class="st">suppressed</span><span class="ar">→ đăng nhập lại / máy khác / đổi mật khẩu →</span><span class="st">invalidated</span></div>
+  <div class="chain"><span class="st">valid</span><span class="ar">→ quá 14 ngày, khi gọi API-003 →</span><span class="st">expired</span></div>
+  <p><code>valid</code> = dùng được · <code>suppressed</code> = <i>tạm khóa quyền tự đăng nhập</i> · <code>invalidated</code> = hủy hẳn · <code>expired</code> = hết 14 ngày.</p>
+</div>
+<div class="card">
+  <h3><code>user_tokens</code> <span class="pill p-change">sửa</span></h3>
+  <p>Token của phiên, chỉ thêm dòng (mỗi lần làm mới = 1 dòng). Chỉ lưu hash.</p>
+  <div class="tbl"><table>
+  <thead><tr><th>Cột QA cần nhìn</th><th>Ý nghĩa / giá trị</th></tr></thead>
+  <tbody><tr><td><code>session_id</code> <span class="pill p-new">mới</span></td><td>Trỏ về <code>login_sessions.id</code>; dòng cũ = NULL</td></tr>
+  <tr><td><code>family_id</code></td><td>Họ token khi xoay vòng (đã có)</td></tr>
+  <tr><td><code>expires_at</code>, <code>refresh_expires_at</code></td><td>Hạn access / hạn làm mới (= thao tác cuối + 60')</td></tr>
+  <tr><td><code>consumed_at</code>, <code>revoked_at</code></td><td>Đã dùng để làm mới / đã thu hồi</td></tr>
+  </tbody></table></div>
+</div>
+<div class="card">
+  <h3><code>auth_audit_events</code> <span class="pill p-new">mới</span></h3>
+  <p>Một dòng = một sự kiện; ghi cùng transaction với nghiệp vụ.</p>
+  <div class="tbl"><table>
+  <thead><tr><th>Cột QA cần nhìn</th><th>Ý nghĩa / giá trị</th></tr></thead>
+  <tbody><tr><td><code>event_code</code></td><td>Tên hằng, ví dụ <code>login_succeeded</code> (Q-07)</td></tr>
+  <tr><td><code>account_id</code></td><td><code>NULL</code> với đăng nhập sai (<code>EVT-002</code>)</td></tr>
+  <tr><td><code>session_ref</code>, <code>device_ref</code>, <code>correlation_id</code></td><td>Nối với phiên / request (<code>X-Correlation-Id</code>)</td></tr>
+  <tr><td><code>scope</code></td><td><code>ip</code> | <code>email</code>, chỉ với <code>EVT-005</code></td></tr>
+  <tr><td><code>detail</code>, <code>occurred_at</code></td><td><code>detail</code> không được chứa Password, token, Email</td></tr>
+  </tbody></table></div>
+</div>
+<div class="card">
+  <h3><code>login_attempt_counters</code> <span class="pill p-new">mới</span></h3>
+  <p>Bộ đếm chống dò mật khẩu, 1 dòng mỗi (loại, khóa). Dùng chung với FEAT-003 <i>(theo TA)</i>.</p>
+  <div class="tbl"><table>
+  <thead><tr><th>Cột QA cần nhìn</th><th>Ý nghĩa / giá trị</th></tr></thead>
+  <tbody><tr><td><code>scope_type</code>, <code>scope_key</code></td><td><code>ip</code> | <code>email</code>; khóa là SHA-256 của IP / Email đã chuẩn hóa</td></tr>
+  <tr><td><code>window_started_at</code>, <code>attempt_count</code></td><td>Đầu cửa sổ 60 giây; chỉ đếm lần <b>thất bại</b></td></tr>
+  <tr><td><code>blocked_until</code></td><td>= <code>window_started_at + 60 giây</code> khi vượt ngưỡng</td></tr>
+  </tbody></table></div>
+</div>
+<div class="card">
+  <h3><code>verification_grants</code> <span class="pill p-new">mới</span></h3>
+  <p>Vé cho Account <code>pending</code> sang bước OTP Đăng ký. Không phải phiên đăng nhập.</p>
+  <div class="tbl"><table>
+  <thead><tr><th>Cột QA cần nhìn</th><th>Ý nghĩa / giá trị</th></tr></thead>
+  <tbody><tr><td><code>account_id</code>, <code>origin</code></td><td>Flow này ghi <code>origin = login</code></td></tr>
+  <tr><td><code>expires_at</code></td><td>= lúc cấp + 600 giây</td></tr>
+  <tr><td><code>consumed_at</code></td><td>Chỉ đặt khi Account kích hoạt thành công (FEAT-003); dùng được nhiều lần trong hạn</td></tr>
+  </tbody></table></div>
+</div>
+<div class="card">
+  <h3><code>accounts</code> <span class="pill p-read">chỉ đọc</span></h3>
+  <p>Đọc ở 3.1 bước 3–4, 3.2 bước 3 và mỗi request (3.3 bước 2). Cột: <code>username</code> (Email lowercase + trim), <code>password_hash</code>, <code>status</code>.</p>
+  <div class="chain"><span class="st">pending</span><span class="ar">→ OTP (FEAT-003) →</span><span class="st">active</span><span class="ar">⇄ Account Management ⇄</span><span class="st">deactive</span><span class="st">blocked</span></div>
+  <p>Chỉ <code>active</code> đăng nhập được. Cần tài khoản dựng sẵn ở từng status (<code>SEED-*</code>) để test.</p>
+</div>
+<div class="card">
+  <h3><code>users</code> <span class="pill p-read">chỉ đọc</span></h3>
+  <p>Đọc cùng <code>accounts</code> ở 3.1 bước 3. Trạng thái Client/Company <b>không</b> ảnh hưởng đăng nhập.</p>
+</div>
+</div>
+<div class="note warn"><b>Không nằm trong DB nhưng cần biết khi test:</b> cookie <code>rt_remember</code> (HttpOnly, 14 ngày, dạng <code>selector.verifier</code>) · <code>rt_remember_hint=1</code> (FE đọc được, chỉ để quyết định có gọi API-003) · <code>rt_device</code> (chứa <code>device_ref</code>) · IndexedDB: <code>lastGestureAt</code>, <code>idleTimedOut</code> (xóa site data là mất cờ) · localStorage: access/refresh token, <code>sessionEndedReason</code> (đồng bộ giữa các tab).</div>
+
+<h2 id="test"><span class="n">05</span>Ràng buộc &amp; con số để test</h2>
+<ul>
+  <li><b>Mỗi Account tối đa 1 dòng <code>login_sessions</code> có <code>active_account_id</code> khác NULL</b> (unique index), kể cả khi gửi 2 request đồng thời.</li>
+  <li><b>Mỗi cặp (<code>account_id</code>, <code>device_ref</code>) tối đa 1 dòng <code>remember_logins</code> đang <code>valid</code> hoặc <code>suppressed</code>.</b></li>
+  <li><code>login_sessions.status</code> đã <code>terminated_*</code> không quay lại <code>active</code>; <code>remember_logins</code> đã <code>expired</code>/<code>invalidated</code> không quay lại <code>valid</code>.</li>
+  <li>Auto login và làm mới token <b>không</b> thay đổi <code>remember_logins.expires_at</code>.</li>
+  <li>Không table nào lưu Password, token gốc hay Email trong audit; <code>scope_key</code> là hash.</li>
+</ul>
+<div class="tbl"><table>
+<thead><tr><th>Con số</th><th>Giá trị</th><th>Lưu / kiểm ở đâu</th></tr></thead>
+<tbody><tr><td>Không thao tác → hết phiên</td><td>60 phút, sai số 0</td><td><code>login_sessions.idle_ended_at</code></td></tr>
+<tr><td>Hạn token sau khi làm mới</td><td><code>now + (3600 − idleSeconds)</code>; vd <code>idleSeconds = 900</code> → <code>now + 2700</code></td><td><code>user_tokens.refresh_expires_at</code></td></tr>
+<tr><td>Làm mới token khi có thao tác và token đã</td><td>&gt; 600 giây tuổi</td><td>Khóa FE <code>NEXT_PUBLIC_AUTH_REFRESH_MARGIN</code> (Q-02)</td></tr>
+<tr><td>Ghi nhớ đăng nhập</td><td>14 ngày (1 209 600 giây), tuyệt đối</td><td><code>remember_logins.expires_at</code></td></tr>
+<tr><td>Rate limit</td><td>10 lần / 60 giây, riêng theo IP và theo Email</td><td><code>login_attempt_counters</code> (Q-03)</td></tr>
+<tr><td>Vé Pending</td><td>600 giây</td><td><code>verification_grants.expires_at</code></td></tr>
+<tr><td>Ghi mốc thao tác</td><td>tối đa 1 lần / 5 giây</td><td>IndexedDB <code>lastGestureAt</code></td></tr>
+</tbody></table></div>
+<div class="tbl"><table>
+<thead><tr><th>Tình huống</th><th>Hiển thị (data-msg-code / chữ)</th><th>HTTP · mã</th></tr></thead>
+<tbody><tr><td>Sai Email hoặc mật khẩu</td><td><code>AUTH.LOGIN.INVALID_CREDENTIALS</code> · Email hoặc mật khẩu không chính xác.</td><td><code>401 · 100100001</code></td></tr>
+<tr><td>Tài khoản <code>deactive</code>/<code>blocked</code></td><td><code>AUTH.LOGIN.ACCOUNT_LOCKED</code> · Tài khoản hiện tại đã bị khóa.</td><td><code>401 · 100100011</code></td></tr>
+<tr><td>Tài khoản <code>pending</code></td><td><code>AUTH.LOGIN.ACCOUNT_UNVERIFIED</code> · Tài khoản chưa được xác thực…</td><td><code>401 · 100100012</code></td></tr>
+<tr><td>Quá nhiều lần thử</td><td><code>AUTH.LOGIN.RATE_LIMITED</code> · Bạn đã thử đăng nhập quá nhiều lần…</td><td><code>429 · 100100013</code></td></tr>
+<tr><td>Lỗi hệ thống</td><td><code>AUTH.LOGIN.SYSTEM_ERROR</code> · Hệ thống đang tạm thời không phản hồi…</td><td><code>503 · 100070002</code></td></tr>
+<tr><td>Phiên kết thúc (khác) / máy khác / idle / đổi mật khẩu</td><td><code>AUTH.SESSION.ENDED</code> / <code>ENDED_OTHER_DEVICE</code> / <code>ENDED_INACTIVITY</code> / <code>ENDED_PASSWORD_RESET</code></td><td><code>401 · 100100014 / 015 / 016 / 017</code></td></tr>
+<tr><td>Auto login thất bại</td><td>Không có message, chỉ hiện form</td><td><code>401 · 100100018</code></td></tr>
+<tr><td>Trống / sai định dạng (chỉ FE)</td><td><code>AUTH.LOGIN.EMAIL_REQUIRED</code> · <code>EMAIL_FORMAT_INVALID</code> · <code>PASSWORD_REQUIRED</code></td><td>không gửi request</td></tr>
+</tbody></table></div>
+<p>QA assert theo <code>data-msg-code</code>, không theo chữ (chữ còn chờ chốt copy).</p>
+
+<h2 id="hoi"><span class="n">06</span>Điểm chưa rõ cần hỏi TA</h2>
+<div class="tbl"><table class="q">
+<thead><tr><th>#</th><th>Câu hỏi</th><th>Vì sao ảnh hưởng tới test</th><th>Ở đâu trong TA</th></tr></thead>
+<tbody><tr><td>Q-01</td><td>Account <code>pending</code> đăng nhập xong sang màn nào: <code>SC-07 register-otp</code> hay <code>data-screen="verify-otp"</code>?</td><td>Hai chỗ ghi khác nhau, không biết assert màn nào ở AC-114</td><td><code>ui-contract.md</code> §7 và §11 (dòng AC-114)</td></tr>
+<tr><td>Q-02</td><td>Margin làm mới là 600 giây với "sai số 50–60 phút", hay phải bằng <code>AUTH_REFRESH_TOKEN_TTL − 3600</code> (= 0) với "sai số 0"?</td><td>Không biết mong đợi phiên chết đúng phút 60 hay trong khoảng 50–60</td><td><code>design.md</code> §9.3 cuối, §10 bảng cấu hình</td></tr>
+<tr><td>Q-03</td><td>Bộ đếm rate limit: "10 request" có tính lần đăng nhập đúng không (cột ghi "chỉ đếm lần thất bại")? Khi nào bộ đếm reset? Câu về tự reset bị cụt.</td><td>Không biết lần thứ mấy bị chặn và chờ bao lâu thì thử lại được</td><td><code>design.md</code> §2.6, §3.4 (câu "ENT-007 tự lành…")</td></tr>
+<tr><td>Q-04</td><td>Tài khoản bị khóa giữa phiên: <code>remember_logins</code> có bị <code>invalidated</code> không? Có đặt <code>active_account_id = NULL</code>, <code>terminated_at</code> không?</td><td>State machine ghi nhớ không có nhánh này, nhưng TA nói "mở lại Account không phục hồi ghi nhớ cũ"</td><td><code>analysis.md</code> §4.1 Hình B, §4.3; <code>design.md</code> §4.5</td></tr>
+<tr><td>Q-05</td><td>Đăng nhập lại có tick trên cùng máy khi dòng cũ đang <code>valid</code>/<code>suppressed</code>: dòng cũ ghi <code>invalidated_reason</code> gì?</td><td>Chỉ có 3 giá trị (<code>other_device</code>, <code>untick</code>, <code>password_reset</code>), không có giá trị cho "thay bằng dòng mới"</td><td><code>design.md</code> §2.4, §7.2</td></tr>
+<tr><td>Q-06</td><td>Cột <code>live_marker</code> có trong unique index nhưng không có trong bảng cột <code>remember_logins</code>. QA có cần kiểm cột này?</td><td>Ràng buộc "1 dòng sống / máy" dựa vào cột này</td><td><code>design.md</code> §2.4 vs §3.1</td></tr>
+<tr><td>Q-07</td><td>Giá trị chính xác của <code>event_code</code> cho từng EVT (chỉ có ví dụ <code>login_succeeded</code>)?</td><td>Cần để viết SQL kiểm audit</td><td><code>design.md</code> §2.5</td></tr>
+<tr><td>Q-08</td><td>Account <code>pending</code> đăng nhập nhiều lần: mỗi lần thêm 1 dòng <code>verification_grants</code> hay dùng lại dòng còn hạn?</td><td>Không biết đếm số dòng mong đợi</td><td><code>design.md</code> §2.7, <code>analysis.md</code> TD-19</td></tr>
+</tbody></table></div>
+
+<footer>Nguồn: chỉ tài liệu TA · GitLab <code>dayonevn/biz-portal-docs</code> · <code>technical-design/products/reward-enterprise/authentication/login</code> @ master <code>627c129c</code> (28/08/2026, 3 file). Không đối chiếu BA/FRD.</footer>
+</main>
+</div>
