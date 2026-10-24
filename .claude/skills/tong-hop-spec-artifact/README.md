@@ -102,4 +102,4 @@ tong-hop-ta-db-artifact/
 ├── references/qa-db-checklist.md
 └── assets/template.html, example-login-qa.html
 ```
-Các file `example-*.html` cắt từ output thật (Đăng nhập, Đăng ký), có nội dung nội bộ. Chỉ share trong công ty.
+Các file `example-*.html` là mẫu minh hoạ đã ẩn danh: tên sản phẩm, link nguồn, ID page/issue, commit đều là giá trị giả. Mẫu chỉ dùng để học bố cục và giọng văn, không phản ánh hệ thống thật. Nếu cập nhật mẫu từ output thật, phải thay link nội bộ, tên sản phẩm/khách hàng, ID page/issue và commit hash bằng giá trị giả, rồi kiểm tra lại trước khi commit.
