@@ -59,13 +59,15 @@ Mỗi lần chạy dùng 1 thư mục riêng, đặt trong `campaign-qc/` ở th
 ## Lưu ý khi dùng git
 
 Brief và test case là dữ liệu thật (tên khách hàng, link SharePoint/Redmine/Figma, ảnh bill...),
-không được commit. Thêm dòng sau vào `.gitignore` của project:
+không được commit. `campaign-qc/` đã có sẵn trong `.gitignore` của repo này. Nếu copy skill
+sang project khác thì thêm dòng sau vào `.gitignore` của project đó:
 
 ```
 campaign-qc/
 ```
 
-Không đặt file thật vào thư mục skill. `assets/Template_TCs.xlsx` phải luôn là khung trống —
+Không đặt file thật vào thư mục skill. File trong `examples/` là dữ liệu giả, đã ẩn danh.
+`assets/Template_TCs.xlsx` phải luôn là khung trống —
 không để lại tên campaign, người tạo, ngày tạo của lần chạy trước. Nếu format thay đổi, tạo lại
 bản mẫu dữ liệu giả rồi thay vào `examples/`, sau đó mở kiểm tra (kể cả hyperlink) không còn
 dữ liệu thật.

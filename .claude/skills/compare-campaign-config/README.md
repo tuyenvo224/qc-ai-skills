@@ -55,11 +55,12 @@ Mỗi lần so sánh dùng 1 thư mục riêng, đặt trong `campaign-qc/` ở 
 ## Lưu ý khi dùng git
 
 Brief và config là dữ liệu thật của campaign (SĐT, họ tên, email, secret webhook...), không
-được commit. Thêm dòng sau vào `.gitignore` của project:
+được commit. `campaign-qc/` đã có sẵn trong `.gitignore` của repo này. Nếu copy skill sang
+project khác thì thêm dòng sau vào `.gitignore` của project đó:
 
 ```
 campaign-qc/
 ```
 
-Không đặt file thật vào thư mục skill. Nếu cần cập nhật file mẫu khi format brief/config thay
+Không đặt file thật vào thư mục skill. File trong `examples/` là dữ liệu giả, đã ẩn danh. Nếu cần cập nhật file mẫu khi format brief/config thay
 đổi, tạo lại bản ẩn danh rồi thay vào `examples/`, sau đó mở kiểm tra không còn dữ liệu thật.
